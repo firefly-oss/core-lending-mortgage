@@ -1,8 +1,8 @@
 package com.catalis.core.lending.mortgages.interfaces.dtos.contract.v1;
 
-import com.catalis.common.core.filters.FilterableId;
 import com.catalis.core.lending.mortgages.interfaces.enums.contract.v1.ContractStatusEnum;
 import com.catalis.core.lending.mortgages.interfaces.enums.contract.v1.RateTypeEnum;
+import com.catalis.core.utils.annotations.FilterableId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
