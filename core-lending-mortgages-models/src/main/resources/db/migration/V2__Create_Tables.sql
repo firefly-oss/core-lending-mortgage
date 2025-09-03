@@ -1,62 +1,17 @@
--- V2 - CREATE TABLES FOR THE MORTGAGE SUBMODULE
+-- V2 - CREATE TABLES FOR THE MORTGAGE SUBMODULE WITH UUID PRIMARY KEYS
+
+-- Enable uuid extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ========================================================================
--- TABLE: mortgage_application
--- ========================================================================
-CREATE TABLE IF NOT EXISTS mortgage_application (
-                                                    mortgage_application_id   BIGSERIAL PRIMARY KEY,
-                                                    applicant_id             BIGINT NOT NULL, -- external reference (Customer domain)
-                                                    co_applicant_id          BIGINT,         -- optional second applicant
-                                                    property_id              BIGINT NOT NULL, -- references mortgage_property
-                                                    product_id               BIGINT,          -- references some product setup
-                                                    application_status       application_status NOT NULL,
-                                                    application_channel      application_channel NOT NULL,
-                                                    requested_amount         DECIMAL(18,2),
-    requested_term_months    INT,
-    down_payment             DECIMAL(18,2),
-    monthly_income           DECIMAL(18,2),
-    monthly_expenses         DECIMAL(18,2),
-    employment_type          employment_type NOT NULL,
-    residence_type           residence_type NOT NULL,
-    years_at_current_job     INT,
-    years_at_current_address INT,
-    purpose                  purpose NOT NULL,
-    existing_customer        BOOLEAN DEFAULT FALSE,
-    remarks                  TEXT,
-    assigned_to              VARCHAR(100),
-    submission_date          TIMESTAMP,
-    created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at               TIMESTAMP NOT NULL DEFAULT NOW()
-    );
-
--- ========================================================================
--- TABLE: mortgage_application_status_history
--- ========================================================================
-CREATE TABLE IF NOT EXISTS mortgage_application_status_history (
-                                                                   status_history_id        BIGSERIAL PRIMARY KEY,
-                                                                   mortgage_application_id  BIGINT NOT NULL,
-                                                                   old_status               application_status,
-                                                                   new_status               application_status NOT NULL,
-                                                                   changed_by               VARCHAR(100),
-    change_reason            VARCHAR(100),
-    comments                 TEXT,
-    changed_at               TIMESTAMP NOT NULL DEFAULT NOW(),
-    created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_app_status_hist
-    FOREIGN KEY (mortgage_application_id)
-    REFERENCES mortgage_application (mortgage_application_id)
-    );
-
--- ========================================================================
--- TABLE: mortgage_property
+-- TABLE: mortgage_property (base table, no dependencies)
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_property (
-                                                 property_id              BIGSERIAL PRIMARY KEY,
-                                                 property_type            property_type NOT NULL,
-                                                 property_status          property_status NOT NULL,
-                                                 property_use             property_use NOT NULL,
-                                                 address_line1            VARCHAR(255),
+    property_id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    property_type            property_type NOT NULL,
+    property_status          property_status NOT NULL,
+    property_use             property_use NOT NULL,
+    address_line1            VARCHAR(255),
     address_line2            VARCHAR(255),
     city                     VARCHAR(100),
     state                    VARCHAR(100),
@@ -82,16 +37,65 @@ CREATE TABLE IF NOT EXISTS mortgage_property (
     restrictions             TEXT,
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW()
-    );
+);
+
+-- ========================================================================
+-- TABLE: mortgage_application
+-- ========================================================================
+CREATE TABLE IF NOT EXISTS mortgage_application (
+    mortgage_application_id   UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    applicant_id             UUID NOT NULL, -- external reference (Customer domain)
+    co_applicant_id          UUID,         -- optional second applicant
+    property_id              UUID NOT NULL, -- references mortgage_property
+    product_id               UUID,          -- references some product setup
+    application_status       application_status NOT NULL,
+    application_channel      application_channel NOT NULL,
+    requested_amount         DECIMAL(18,2),
+    requested_term_months    INT,
+    down_payment             DECIMAL(18,2),
+    monthly_income           DECIMAL(18,2),
+    monthly_expenses         DECIMAL(18,2),
+    employment_type          employment_type NOT NULL,
+    residence_type           residence_type NOT NULL,
+    years_at_current_job     INT,
+    years_at_current_address INT,
+    purpose                  purpose NOT NULL,
+    existing_customer        BOOLEAN DEFAULT FALSE,
+    remarks                  TEXT,
+    assigned_to              VARCHAR(100),
+    submission_date          TIMESTAMP,
+    created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_mortgage_application_property
+        FOREIGN KEY (property_id) REFERENCES mortgage_property (property_id)
+);
+
+-- ========================================================================
+-- TABLE: mortgage_application_status_history
+-- ========================================================================
+CREATE TABLE IF NOT EXISTS mortgage_application_status_history (
+    status_history_id        UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_application_id  UUID NOT NULL,
+    old_status               application_status,
+    new_status               application_status NOT NULL,
+    changed_by               VARCHAR(100),
+    change_reason            VARCHAR(100),
+    comments                 TEXT,
+    changed_at               TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_app_status_hist
+        FOREIGN KEY (mortgage_application_id) REFERENCES mortgage_application (mortgage_application_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_appraisal
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_appraisal (
-                                                  appraisal_id             BIGSERIAL PRIMARY KEY,
-                                                  property_id              BIGINT NOT NULL,
-                                                  mortgage_application_id  BIGINT NOT NULL,
-                                                  appraiser_name           VARCHAR(255),
+    appraisal_id             UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    property_id              UUID NOT NULL,
+    mortgage_application_id  UUID NOT NULL,
+    appraiser_name           VARCHAR(255),
     license_number           VARCHAR(100),
     appraisal_type           appraisal_type NOT NULL,
     market_value             DECIMAL(18,2),
@@ -114,21 +118,19 @@ CREATE TABLE IF NOT EXISTS mortgage_appraisal (
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_property_appraisal
-    FOREIGN KEY (property_id)
-    REFERENCES mortgage_property (property_id),
+        FOREIGN KEY (property_id) REFERENCES mortgage_property (property_id),
     CONSTRAINT fk_app_appraisal
-    FOREIGN KEY (mortgage_application_id)
-    REFERENCES mortgage_application (mortgage_application_id)
-    );
+        FOREIGN KEY (mortgage_application_id) REFERENCES mortgage_application (mortgage_application_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_contract
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_contract (
-                                                 mortgage_contract_id     BIGSERIAL PRIMARY KEY,
-                                                 mortgage_application_id  BIGINT NOT NULL,
-                                                 property_id              BIGINT NOT NULL,
-                                                 contract_number          VARCHAR(50) NOT NULL,
+    mortgage_contract_id     UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_application_id  UUID NOT NULL,
+    property_id              UUID NOT NULL,
+    contract_number          VARCHAR(50) NOT NULL,
     contract_status          contract_status NOT NULL,
     loan_amount              DECIMAL(18,2) NOT NULL,
     interest_rate            DECIMAL(9,4) NOT NULL,
@@ -148,21 +150,19 @@ CREATE TABLE IF NOT EXISTS mortgage_contract (
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_app_contract
-    FOREIGN KEY (mortgage_application_id)
-    REFERENCES mortgage_application (mortgage_application_id),
+        FOREIGN KEY (mortgage_application_id) REFERENCES mortgage_application (mortgage_application_id),
     CONSTRAINT fk_property_contract
-    FOREIGN KEY (property_id)
-    REFERENCES mortgage_property (property_id)
-    );
+        FOREIGN KEY (property_id) REFERENCES mortgage_property (property_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_insurance
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_insurance (
-                                                  insurance_id             BIGSERIAL PRIMARY KEY,
-                                                  mortgage_contract_id     BIGINT NOT NULL,
-                                                  insurance_type           insurance_type NOT NULL,
-                                                  policy_number            VARCHAR(100) NOT NULL,
+    insurance_id             UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_contract_id     UUID NOT NULL,
+    insurance_type           insurance_type NOT NULL,
+    policy_number            VARCHAR(100) NOT NULL,
     provider_name            VARCHAR(255),
     provider_code            VARCHAR(50),
     coverage_amount          DECIMAL(18,2) NOT NULL,
@@ -180,34 +180,32 @@ CREATE TABLE IF NOT EXISTS mortgage_insurance (
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_contract_ins
-    FOREIGN KEY (mortgage_contract_id)
-    REFERENCES mortgage_contract (mortgage_contract_id)
-    );
+        FOREIGN KEY (mortgage_contract_id) REFERENCES mortgage_contract (mortgage_contract_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_disbursement
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_disbursement (
-                                                     mortgage_disbursement_id BIGSERIAL PRIMARY KEY,
-                                                     mortgage_contract_id     BIGINT NOT NULL,
-                                                     disbursement_amount      DECIMAL(18,2) NOT NULL,
+    disbursement_id          UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_contract_id     UUID NOT NULL,
+    disbursement_amount      DECIMAL(18,2) NOT NULL,
     disbursement_date        DATE NOT NULL,
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_contract_disb
-    FOREIGN KEY (mortgage_contract_id)
-    REFERENCES mortgage_contract (mortgage_contract_id)
-    );
+        FOREIGN KEY (mortgage_contract_id) REFERENCES mortgage_contract (mortgage_contract_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_payment_schedule
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_payment_schedule (
-                                                         schedule_id              BIGSERIAL PRIMARY KEY,
-                                                         mortgage_contract_id     BIGINT NOT NULL,
-                                                         installment_number       INT NOT NULL,
-                                                         due_date                 DATE NOT NULL,
-                                                         principal_amount         DECIMAL(18,2) NOT NULL,
+    schedule_id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_contract_id     UUID NOT NULL,
+    installment_number       INT NOT NULL,
+    due_date                 DATE NOT NULL,
+    principal_amount         DECIMAL(18,2) NOT NULL,
     interest_amount          DECIMAL(18,2) NOT NULL,
     fee_amount               DECIMAL(18,2) DEFAULT 0,
     escrow_amount            DECIMAL(18,2) DEFAULT 0,
@@ -221,40 +219,37 @@ CREATE TABLE IF NOT EXISTS mortgage_payment_schedule (
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_contract_sched
-    FOREIGN KEY (mortgage_contract_id)
-    REFERENCES mortgage_contract (mortgage_contract_id)
-    );
+        FOREIGN KEY (mortgage_contract_id) REFERENCES mortgage_contract (mortgage_contract_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_payment_record
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_payment_record (
-                                                       payment_record_id        BIGSERIAL PRIMARY KEY,
-                                                       mortgage_contract_id     BIGINT NOT NULL,
-                                                       payment_schedule_id      BIGINT, -- optional link to mortgage_payment_schedule
-                                                       transaction_id           BIGINT, -- external Payment domain reference
-                                                       payment_amount           DECIMAL(18,2) NOT NULL,
+    payment_record_id        UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_contract_id     UUID NOT NULL,
+    payment_schedule_id      UUID, -- optional link to mortgage_payment_schedule
+    transaction_id           UUID, -- external Payment domain reference
+    payment_amount           DECIMAL(18,2) NOT NULL,
     payment_date             DATE NOT NULL,
     is_partial_payment       BOOLEAN DEFAULT FALSE,
     note                     TEXT,
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_contract_pay
-    FOREIGN KEY (mortgage_contract_id)
-    REFERENCES mortgage_contract (mortgage_contract_id),
+        FOREIGN KEY (mortgage_contract_id) REFERENCES mortgage_contract (mortgage_contract_id),
     CONSTRAINT fk_sched_payment
-    FOREIGN KEY (payment_schedule_id)
-    REFERENCES mortgage_payment_schedule (schedule_id)
-    );
+        FOREIGN KEY (payment_schedule_id) REFERENCES mortgage_payment_schedule (schedule_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_document
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_document (
-                                                 document_id              BIGSERIAL PRIMARY KEY,
-                                                 mortgage_application_id  BIGINT NOT NULL,
-                                                 document_type            document_type NOT NULL,
-                                                 document_reference       VARCHAR(100),
+    document_id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_application_id  UUID NOT NULL,
+    document_type            document_type NOT NULL,
+    document_reference       VARCHAR(100),
     document_date            DATE,
     is_verified              BOOLEAN DEFAULT FALSE,
     verified_by              VARCHAR(100),
@@ -263,24 +258,22 @@ CREATE TABLE IF NOT EXISTS mortgage_document (
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_app_doc
-    FOREIGN KEY (mortgage_application_id)
-    REFERENCES mortgage_application (mortgage_application_id)
-    );
+        FOREIGN KEY (mortgage_application_id) REFERENCES mortgage_application (mortgage_application_id)
+);
 
 -- ========================================================================
 -- TABLE: mortgage_notification
 -- ========================================================================
 CREATE TABLE IF NOT EXISTS mortgage_notification (
-                                                     notification_id          BIGSERIAL PRIMARY KEY,
-                                                     mortgage_contract_id     BIGINT NOT NULL,
-                                                     notification_type        notification_type NOT NULL,
-                                                     priority                 priority NOT NULL,
-                                                     recipient               VARCHAR(100),
+    notification_id          UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    mortgage_contract_id     UUID NOT NULL,
+    notification_type        notification_type NOT NULL,
+    priority                 priority NOT NULL,
+    recipient               VARCHAR(100),
     message                  TEXT,
     is_sent                  BOOLEAN DEFAULT FALSE,
     sent_at                  TIMESTAMP,
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_mortgage_contract_notif
-    FOREIGN KEY (mortgage_contract_id)
-    REFERENCES mortgage_contract (mortgage_contract_id)
-    );
+        FOREIGN KEY (mortgage_contract_id) REFERENCES mortgage_contract (mortgage_contract_id)
+);

@@ -1,4 +1,4 @@
--- V3 - CASTS USING "WITH INOUT AS IMPLICIT" FOR ALL MORTGAGE ENUMS
+-- V3 - CASTS USING "WITH INOUT AS IMPLICIT" FOR ALL MORTGAGE ENUMS AND CREATE INDEXES
 
 -------------------------
 -- application_status
@@ -139,3 +139,34 @@ CREATE CAST (varchar AS notification_type)
 CREATE CAST (varchar AS priority)
     WITH INOUT
     AS IMPLICIT;
+
+-- ========================================================================
+-- CREATE INDEXES ON UUID COLUMNS FOR PERFORMANCE
+-- ========================================================================
+
+CREATE INDEX idx_mortgage_application_id ON mortgage_application (mortgage_application_id);
+CREATE INDEX idx_mortgage_property_id ON mortgage_property (property_id);
+CREATE INDEX idx_mortgage_contract_id ON mortgage_contract (mortgage_contract_id);
+CREATE INDEX idx_mortgage_appraisal_id ON mortgage_appraisal (appraisal_id);
+CREATE INDEX idx_mortgage_payment_schedule_id ON mortgage_payment_schedule (schedule_id);
+CREATE INDEX idx_mortgage_payment_record_id ON mortgage_payment_record (payment_record_id);
+CREATE INDEX idx_mortgage_insurance_id ON mortgage_insurance (insurance_id);
+CREATE INDEX idx_mortgage_document_id ON mortgage_document (document_id);
+CREATE INDEX idx_mortgage_notification_id ON mortgage_notification (notification_id);
+CREATE INDEX idx_mortgage_disbursement_id ON mortgage_disbursement (disbursement_id);
+CREATE INDEX idx_mortgage_application_status_history_id ON mortgage_application_status_history (status_history_id);
+
+-- Foreign key indexes for performance
+CREATE INDEX idx_mortgage_application_property_id ON mortgage_application (property_id);
+CREATE INDEX idx_mortgage_appraisal_property_id ON mortgage_appraisal (property_id);
+CREATE INDEX idx_mortgage_appraisal_application_id ON mortgage_appraisal (mortgage_application_id);
+CREATE INDEX idx_mortgage_contract_application_id ON mortgage_contract (mortgage_application_id);
+CREATE INDEX idx_mortgage_contract_property_id ON mortgage_contract (property_id);
+CREATE INDEX idx_mortgage_payment_schedule_contract_id ON mortgage_payment_schedule (mortgage_contract_id);
+CREATE INDEX idx_mortgage_payment_record_contract_id ON mortgage_payment_record (mortgage_contract_id);
+CREATE INDEX idx_mortgage_payment_record_schedule_id ON mortgage_payment_record (payment_schedule_id);
+CREATE INDEX idx_mortgage_insurance_contract_id ON mortgage_insurance (mortgage_contract_id);
+CREATE INDEX idx_mortgage_document_application_id ON mortgage_document (mortgage_application_id);
+CREATE INDEX idx_mortgage_notification_contract_id ON mortgage_notification (mortgage_contract_id);
+CREATE INDEX idx_mortgage_disbursement_contract_id ON mortgage_disbursement (mortgage_contract_id);
+CREATE INDEX idx_mortgage_application_status_hist_app_id ON mortgage_application_status_history (mortgage_application_id);
