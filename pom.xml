@@ -18,6 +18,7 @@
         <module>core-lending-mortgages-interfaces</module>
         <module>core-lending-mortgages-models</module>
         <module>core-lending-mortgages-web</module>
+        <module>core-lending-mortgages-sdk</module>
     </modules>
 
 
@@ -38,6 +39,11 @@
             <dependency>
                 <groupId>com.firefly</groupId>
                 <artifactId>core-lending-mortgages-models</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.firefly</groupId>
+                <artifactId>core-lending-mortgages-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
