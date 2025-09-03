@@ -9,10 +9,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,32 +21,77 @@ import java.time.LocalDateTime;
 public class MortgageContractDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long mortgageContractId;
+    private UUID mortgageContractId;
 
     @FilterableId
-    private Long mortgageApplicationId;
+    @NotNull(message = "Mortgage application ID is required")
+    private UUID mortgageApplicationId;
 
     @FilterableId
-    private Long propertyId;
+    @NotNull(message = "Property ID is required")
+    private UUID propertyId;
 
     @FilterableId
+    @NotBlank(message = "Contract number is required")
+    @Size(max = 50, message = "Contract number cannot exceed 50 characters")
     private String contractNumber;
 
+    @NotNull(message = "Contract status is required")
     private ContractStatusEnum contractStatus;
+
+    @NotNull(message = "Loan amount is required")
+    @DecimalMin(value = "0.01", message = "Loan amount must be greater than 0")
+    @DecimalMax(value = "999999999.99", message = "Loan amount cannot exceed 999,999,999.99")
     private BigDecimal loanAmount;
+
+    @NotNull(message = "Interest rate is required")
+    @DecimalMin(value = "0.00", message = "Interest rate cannot be negative")
+    @DecimalMax(value = "100.00", message = "Interest rate cannot exceed 100%")
     private BigDecimal interestRate;
+
+    @NotNull(message = "Rate type is required")
     private RateTypeEnum rateType;
+
+    @Size(max = 50, message = "Reference rate cannot exceed 50 characters")
     private String referenceRate;
+
+    @DecimalMin(value = "-10.00", message = "Margin rate cannot be less than -10%")
+    @DecimalMax(value = "50.00", message = "Margin rate cannot exceed 50%")
     private BigDecimal marginRate;
+
+    @NotNull(message = "Term in months is required")
+    @Min(value = 1, message = "Term must be at least 1 month")
+    @Max(value = 480, message = "Term cannot exceed 480 months (40 years)")
     private Integer termMonths;
+    @NotNull(message = "Start date is required")
     private LocalDate startDate;
+
+    @NotNull(message = "Maturity date is required")
+    @Future(message = "Maturity date must be in the future")
     private LocalDate maturityDate;
+
+    @NotNull(message = "Monthly payment is required")
+    @DecimalMin(value = "0.01", message = "Monthly payment must be greater than 0")
+    @DecimalMax(value = "999999.99", message = "Monthly payment cannot exceed 999,999.99")
     private BigDecimal monthlyPayment;
+
+    @DecimalMin(value = "0.00", message = "Early repayment fee cannot be negative")
+    @DecimalMax(value = "999999.99", message = "Early repayment fee cannot exceed 999,999.99")
     private BigDecimal earlyRepaymentFee;
+
+    @NotNull(message = "Assumable flag is required")
     private Boolean assumable;
+
+    @DecimalMin(value = "0.00", message = "Tax rate cannot be negative")
+    @DecimalMax(value = "100.00", message = "Tax rate cannot exceed 100%")
     private BigDecimal taxRate;
+
+    @Size(max = 5000, message = "Special conditions cannot exceed 5000 characters")
     private String specialConditions; // JSON format
+
+    @Size(max = 100, message = "Notary reference cannot exceed 100 characters")
     private String notaryReference;
+
     private LocalDateTime signingDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

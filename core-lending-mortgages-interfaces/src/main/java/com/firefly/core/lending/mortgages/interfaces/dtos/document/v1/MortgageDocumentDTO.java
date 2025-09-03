@@ -8,9 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,18 +19,34 @@ import java.time.LocalDateTime;
 public class MortgageDocumentDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long documentId;
+    private UUID documentId;
 
     @FilterableId
-    private Long mortgageApplicationId;
+    @NotNull(message = "Mortgage application ID is required")
+    private UUID mortgageApplicationId;
 
+    @NotNull(message = "Document type is required")
     private DocumentTypeEnum documentType;
+
+    @NotBlank(message = "Document reference is required")
+    @Size(max = 200, message = "Document reference cannot exceed 200 characters")
     private String documentReference;
+
+    @NotNull(message = "Document date is required")
+    @PastOrPresent(message = "Document date cannot be in the future")
     private LocalDate documentDate;
+
+    @NotNull(message = "Verification status is required")
     private Boolean isVerified;
+
+    @Size(max = 100, message = "Verified by cannot exceed 100 characters")
     private String verifiedBy;
+
     private LocalDateTime verifiedAt;
+
+    @Size(max = 1000, message = "Verification notes cannot exceed 1000 characters")
     private String verificationNotes;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

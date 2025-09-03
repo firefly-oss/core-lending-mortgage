@@ -7,10 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,13 +19,21 @@ import java.time.LocalDateTime;
 public class MortgageDisbursementDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long mortgageDisbursementId;
+    private UUID mortgageDisbursementId;
 
     @FilterableId
-    private Long mortgageContractId;
+    @NotNull(message = "Mortgage contract ID is required")
+    private UUID mortgageContractId;
 
+    @NotNull(message = "Disbursement amount is required")
+    @DecimalMin(value = "0.01", message = "Disbursement amount must be greater than 0")
+    @DecimalMax(value = "999999999.99", message = "Disbursement amount cannot exceed 999,999,999.99")
     private BigDecimal disbursementAmount;
+
+    @NotNull(message = "Disbursement date is required")
+    @PastOrPresent(message = "Disbursement date cannot be in the future")
     private LocalDate disbursementDate;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
