@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,10 +21,10 @@ public class MortgageNotification {
 
     @Id
     @Column("notification_id")
-    private Long notificationId;
+    private UUID notificationId;
 
     @Column("mortgage_contract_id")
-    private Long mortgageContractId;
+    private UUID mortgageContractId;
 
     @Column("notification_type")
     private NotificationTypeEnum notificationType;

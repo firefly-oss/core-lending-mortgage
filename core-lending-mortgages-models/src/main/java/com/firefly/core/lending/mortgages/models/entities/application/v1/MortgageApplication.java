@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -21,19 +22,19 @@ public class MortgageApplication {
 
     @Id
     @Column("mortgage_application_id")
-    private Long mortgageApplicationId;
+    private UUID mortgageApplicationId;
 
     @Column("applicant_id")
-    private Long applicantId;  // external reference (Customer domain)
+    private UUID applicantId;  // external reference (Customer domain)
 
     @Column("co_applicant_id")
-    private Long coApplicantId;  // optional second applicant external reference (Customer domain)
+    private UUID coApplicantId;  // optional second applicant external reference (Customer domain)
 
     @Column("property_id")
-    private Long propertyId;   // references mortgage_property
+    private UUID propertyId;   // references mortgage_property
 
     @Column("product_id")
-    private Long productId;    // references a mortgage product setup
+    private UUID productId;    // references a mortgage product setup
 
     @Column("application_status")
     private ApplicationStatusEnum applicationStatus;

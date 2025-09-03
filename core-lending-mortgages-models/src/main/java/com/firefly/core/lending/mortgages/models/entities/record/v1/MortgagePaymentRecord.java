@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,16 +21,16 @@ public class MortgagePaymentRecord {
 
     @Id
     @Column("payment_record_id")
-    private Long paymentRecordId;
+    private UUID paymentRecordId;
 
     @Column("mortgage_contract_id")
-    private Long mortgageContractId;
+    private UUID mortgageContractId;
 
     @Column("payment_schedule_id")
-    private Long paymentScheduleId; // optional link to schedule
+    private UUID paymentScheduleId; // optional link to schedule
 
     @Column("transaction_id")
-    private Long transactionId;     // external Payment domain reference
+    private UUID transactionId;     // external Payment domain reference
 
     @Column("payment_amount")
     private BigDecimal paymentAmount;

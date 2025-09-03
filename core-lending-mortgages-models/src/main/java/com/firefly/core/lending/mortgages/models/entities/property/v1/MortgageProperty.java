@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -24,7 +25,7 @@ public class MortgageProperty {
 
     @Id
     @Column("property_id")
-    private Long propertyId;
+    private UUID propertyId;
 
     @Column("property_type")
     private PropertyTypeEnum propertyType;

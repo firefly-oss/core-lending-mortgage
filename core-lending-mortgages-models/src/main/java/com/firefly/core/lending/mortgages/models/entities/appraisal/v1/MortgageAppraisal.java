@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,13 +24,13 @@ public class MortgageAppraisal {
 
     @Id
     @Column("appraisal_id")
-    private Long appraisalId;
+    private UUID appraisalId;
 
     @Column("property_id")
-    private Long propertyId;
+    private UUID propertyId;
 
     @Column("mortgage_application_id")
-    private Long mortgageApplicationId;
+    private UUID mortgageApplicationId;
 
     @Column("appraiser_name")
     private String appraiserName;

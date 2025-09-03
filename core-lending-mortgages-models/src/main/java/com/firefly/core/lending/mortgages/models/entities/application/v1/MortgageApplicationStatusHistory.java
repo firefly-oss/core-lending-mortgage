@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,10 +20,10 @@ public class MortgageApplicationStatusHistory {
 
     @Id
     @Column("status_history_id")
-    private Long statusHistoryId;
+    private UUID statusHistoryId;
 
     @Column("mortgage_application_id")
-    private Long mortgageApplicationId;
+    private UUID mortgageApplicationId;
 
     @Column("old_status")
     private ApplicationStatusEnum oldStatus;

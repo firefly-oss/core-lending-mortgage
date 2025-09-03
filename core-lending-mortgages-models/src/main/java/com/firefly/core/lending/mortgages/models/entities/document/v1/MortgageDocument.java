@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,10 +21,10 @@ public class MortgageDocument {
 
     @Id
     @Column("document_id")
-    private Long documentId;
+    private UUID documentId;
 
     @Column("mortgage_application_id")
-    private Long mortgageApplicationId;
+    private UUID mortgageApplicationId;
 
     @Column("document_type")
     private DocumentTypeEnum documentType;

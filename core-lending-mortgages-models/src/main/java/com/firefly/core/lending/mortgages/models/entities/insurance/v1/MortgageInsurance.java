@@ -13,7 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,10 +23,10 @@ public class MortgageInsurance {
 
     @Id
     @Column("insurance_id")
-    private Long insuranceId;
+    private UUID insuranceId;
 
     @Column("mortgage_contract_id")
-    private Long mortgageContractId;
+    private UUID mortgageContractId;
 
     @Column("insurance_type")
     private InsuranceTypeEnum insuranceType;
