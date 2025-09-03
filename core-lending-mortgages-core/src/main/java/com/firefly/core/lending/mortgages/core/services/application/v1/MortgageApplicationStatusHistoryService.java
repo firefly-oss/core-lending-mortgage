@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.application.v1.MortgageApplicationStatusHistoryDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageApplicationStatusHistoryService {
 
     /**
@@ -16,7 +16,7 @@ public interface MortgageApplicationStatusHistoryService {
      * @return a reactive wrapper containing a paginated response of Mortgage Application Status History DTOs
      */
     Mono<PaginationResponse<MortgageApplicationStatusHistoryDTO>> findAll(
-            Long mortgageApplicationId,
+            UUID mortgageApplicationId,
             FilterRequest<MortgageApplicationStatusHistoryDTO> filterRequest);
 
     /**
@@ -26,7 +26,7 @@ public interface MortgageApplicationStatusHistoryService {
      * @param dto the data transfer object containing details of the status history to be created
      * @return a Mono emitting the created MortgageApplicationStatusHistoryDTO object upon successful creation, or an error if the operation fails
      */
-    Mono<MortgageApplicationStatusHistoryDTO> create(Long mortgageApplicationId,
+    Mono<MortgageApplicationStatusHistoryDTO> create(UUID mortgageApplicationId,
                                                      MortgageApplicationStatusHistoryDTO dto);
 
     /**
@@ -37,8 +37,8 @@ public interface MortgageApplicationStatusHistoryService {
      * @return a Mono emitting the MortgageApplicationStatusHistoryDTO corresponding to the given identifiers,
      *         or an empty Mono if no matching record is found
      */
-    Mono<MortgageApplicationStatusHistoryDTO> getById(Long mortgageApplicationId,
-                                                      Long statusHistoryId);
+    Mono<MortgageApplicationStatusHistoryDTO> getById(UUID mortgageApplicationId,
+                                                      UUID statusHistoryId);
 
     /**
      * Updates the specific status history entry of a mortgage application with the provided details.
@@ -49,8 +49,8 @@ public interface MortgageApplicationStatusHistoryService {
      * @return a Mono emitting the updated MortgageApplicationStatusHistoryDTO object upon a successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgageApplicationStatusHistoryDTO> update(Long mortgageApplicationId,
-                                                     Long statusHistoryId,
+    Mono<MortgageApplicationStatusHistoryDTO> update(UUID mortgageApplicationId,
+                                                     UUID statusHistoryId,
                                                      MortgageApplicationStatusHistoryDTO dto);
 
     /**
@@ -60,5 +60,5 @@ public interface MortgageApplicationStatusHistoryService {
      * @param statusHistoryId the unique identifier of the status history entry to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageApplicationId, Long statusHistoryId);
+    Mono<Void> delete(UUID mortgageApplicationId, UUID statusHistoryId);
 }

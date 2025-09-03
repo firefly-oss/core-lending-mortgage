@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.contract.v1.MortgageContractDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageContractService {
 
     /**
@@ -30,7 +30,7 @@ public interface MortgageContractService {
      * @return a Mono emitting the MortgageContractDTO corresponding to the specified ID,
      *         or an empty Mono if no contract is found
      */
-    Mono<MortgageContractDTO> getById(Long mortgageContractId);
+    Mono<MortgageContractDTO> getById(UUID mortgageContractId);
 
     /**
      * Updates an existing mortgage contract with the provided details.
@@ -40,7 +40,7 @@ public interface MortgageContractService {
      * @return a Mono emitting the updated MortgageContractDTO upon successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgageContractDTO> update(Long mortgageContractId, MortgageContractDTO dto);
+    Mono<MortgageContractDTO> update(UUID mortgageContractId, MortgageContractDTO dto);
 
     /**
      * Deletes a mortgage contract identified by its unique ID.
@@ -48,5 +48,5 @@ public interface MortgageContractService {
      * @param mortgageContractId the unique identifier of the mortgage contract to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageContractId);
+    Mono<Void> delete(UUID mortgageContractId);
 }

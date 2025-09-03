@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageContractServiceImpl implements MortgageContractService {
@@ -39,14 +39,14 @@ public class MortgageContractServiceImpl implements MortgageContractService {
     }
 
     @Override
-    public Mono<MortgageContractDTO> getById(Long mortgageContractId) {
+    public Mono<MortgageContractDTO> getById(UUID mortgageContractId) {
         return repository.findById(mortgageContractId)
                 .map(mapper::toDTO)
                 .switchIfEmpty(Mono.empty());
     }
 
     @Override
-    public Mono<MortgageContractDTO> update(Long mortgageContractId, MortgageContractDTO dto) {
+    public Mono<MortgageContractDTO> update(UUID mortgageContractId, MortgageContractDTO dto) {
         return repository.findById(mortgageContractId)
                 .flatMap(existingContract -> {
                     MortgageContract updatedEntity = mapper.toEntity(dto);
@@ -57,7 +57,7 @@ public class MortgageContractServiceImpl implements MortgageContractService {
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageContractId) {
+    public Mono<Void> delete(UUID mortgageContractId) {
         return repository.findById(mortgageContractId)
                 .flatMap(repository::delete);
     }

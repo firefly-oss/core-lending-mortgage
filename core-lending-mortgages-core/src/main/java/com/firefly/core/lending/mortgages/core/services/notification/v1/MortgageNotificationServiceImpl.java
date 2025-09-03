@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageNotificationServiceImpl implements MortgageNotificationService {
@@ -23,7 +23,7 @@ public class MortgageNotificationServiceImpl implements MortgageNotificationServ
     private MortgageNotificationMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgageNotificationDTO>> findAll(Long mortgageContractId, FilterRequest<MortgageNotificationDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgageNotificationDTO>> findAll(UUID mortgageContractId, FilterRequest<MortgageNotificationDTO> filterRequest) {
         filterRequest.getFilters().setMortgageContractId(mortgageContractId);
         return FilterUtils.createFilter(
                 MortgageNotification.class,
@@ -32,7 +32,7 @@ public class MortgageNotificationServiceImpl implements MortgageNotificationServ
     }
 
     @Override
-    public Mono<MortgageNotificationDTO> create(Long mortgageContractId, MortgageNotificationDTO dto) {
+    public Mono<MortgageNotificationDTO> create(UUID mortgageContractId, MortgageNotificationDTO dto) {
         dto.setMortgageContractId(mortgageContractId);
         MortgageNotification entity = mapper.toEntity(dto);
         return repository.save(entity)
@@ -40,14 +40,14 @@ public class MortgageNotificationServiceImpl implements MortgageNotificationServ
     }
 
     @Override
-    public Mono<MortgageNotificationDTO> getById(Long mortgageContractId, Long notificationId) {
+    public Mono<MortgageNotificationDTO> getById(UUID mortgageContractId, UUID notificationId) {
         return repository.findById(notificationId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgageNotificationDTO> update(Long mortgageContractId, Long notificationId, MortgageNotificationDTO dto) {
+    public Mono<MortgageNotificationDTO> update(UUID mortgageContractId, UUID notificationId, MortgageNotificationDTO dto) {
         return repository.findById(notificationId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(entity -> {
@@ -60,7 +60,7 @@ public class MortgageNotificationServiceImpl implements MortgageNotificationServ
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageContractId, Long notificationId) {
+    public Mono<Void> delete(UUID mortgageContractId, UUID notificationId) {
         return repository.findById(notificationId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(repository::delete);

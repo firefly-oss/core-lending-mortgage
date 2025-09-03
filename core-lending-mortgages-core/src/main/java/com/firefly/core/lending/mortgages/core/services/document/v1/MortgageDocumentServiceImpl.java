@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageDocumentServiceImpl implements MortgageDocumentService {
@@ -23,7 +23,7 @@ public class MortgageDocumentServiceImpl implements MortgageDocumentService {
     private MortgageDocumentMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgageDocumentDTO>> findAll(Long mortgageApplicationId, FilterRequest<MortgageDocumentDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgageDocumentDTO>> findAll(UUID mortgageApplicationId, FilterRequest<MortgageDocumentDTO> filterRequest) {
         filterRequest.getFilters().setMortgageApplicationId(mortgageApplicationId);
         return FilterUtils.createFilter(
                 MortgageDocument.class,
@@ -32,7 +32,7 @@ public class MortgageDocumentServiceImpl implements MortgageDocumentService {
     }
 
     @Override
-    public Mono<MortgageDocumentDTO> create(Long mortgageApplicationId, MortgageDocumentDTO dto) {
+    public Mono<MortgageDocumentDTO> create(UUID mortgageApplicationId, MortgageDocumentDTO dto) {
         dto.setMortgageApplicationId(mortgageApplicationId);
         MortgageDocument mortgageDocument = mapper.toEntity(dto);
         return Mono.from(repository.save(mortgageDocument))
@@ -40,14 +40,14 @@ public class MortgageDocumentServiceImpl implements MortgageDocumentService {
     }
 
     @Override
-    public Mono<MortgageDocumentDTO> getById(Long mortgageApplicationId, Long documentId) {
+    public Mono<MortgageDocumentDTO> getById(UUID mortgageApplicationId, UUID documentId) {
         return Mono.from(repository.findById(documentId))
                 .filter(doc -> doc.getMortgageApplicationId().equals(mortgageApplicationId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgageDocumentDTO> update(Long mortgageApplicationId, Long documentId, MortgageDocumentDTO dto) {
+    public Mono<MortgageDocumentDTO> update(UUID mortgageApplicationId, UUID documentId, MortgageDocumentDTO dto) {
         return Mono.from(repository.findById(documentId))
                 .filter(doc -> doc.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(existingDoc -> {
@@ -60,7 +60,7 @@ public class MortgageDocumentServiceImpl implements MortgageDocumentService {
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageApplicationId, Long documentId) {
+    public Mono<Void> delete(UUID mortgageApplicationId, UUID documentId) {
         return Mono.from(repository.findById(documentId))
                 .filter(doc -> doc.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(doc -> Mono.from(repository.delete(doc)))

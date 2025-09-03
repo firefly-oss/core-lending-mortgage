@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.insurance.v1.MortgageInsuranceDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageInsuranceService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgageInsuranceService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage insurance records
      * @return a reactive wrapper containing a paginated response of MortgageInsuranceDTOs
      */
-    Mono<PaginationResponse<MortgageInsuranceDTO>> findAll(Long mortgageContractId,
+    Mono<PaginationResponse<MortgageInsuranceDTO>> findAll(UUID mortgageContractId,
                                                            FilterRequest<MortgageInsuranceDTO> filterRequest);
 
     /**
@@ -25,7 +25,7 @@ public interface MortgageInsuranceService {
      * @param dto the data transfer object containing details of the mortgage insurance to be created
      * @return a Mono emitting the created MortgageInsuranceDTO instance upon successful creation
      */
-    Mono<MortgageInsuranceDTO> create(Long mortgageContractId, MortgageInsuranceDTO dto);
+    Mono<MortgageInsuranceDTO> create(UUID mortgageContractId, MortgageInsuranceDTO dto);
 
     /**
      * Retrieves a specific mortgage insurance record based on the provided mortgage contract ID
@@ -36,7 +36,7 @@ public interface MortgageInsuranceService {
      * @return a Mono emitting the MortgageInsuranceDTO corresponding to the specified IDs,
      *         or an empty Mono if no insurance record is found
      */
-    Mono<MortgageInsuranceDTO> getById(Long mortgageContractId, Long insuranceId);
+    Mono<MortgageInsuranceDTO> getById(UUID mortgageContractId, UUID insuranceId);
 
     /**
      * Updates an existing mortgage insurance record associated with a specific mortgage contract.
@@ -46,7 +46,7 @@ public interface MortgageInsuranceService {
      * @param dto the data transfer object containing the updated details of the mortgage insurance
      * @return a Mono emitting the updated MortgageInsuranceDTO upon successful update, or an error if the update operation fails
      */
-    Mono<MortgageInsuranceDTO> update(Long mortgageContractId, Long insuranceId, MortgageInsuranceDTO dto);
+    Mono<MortgageInsuranceDTO> update(UUID mortgageContractId, UUID insuranceId, MortgageInsuranceDTO dto);
 
     /**
      * Deletes a specific mortgage insurance record associated with a mortgage contract.
@@ -55,5 +55,5 @@ public interface MortgageInsuranceService {
      * @param insuranceId the unique identifier of the insurance record to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageContractId, Long insuranceId);
+    Mono<Void> delete(UUID mortgageContractId, UUID insuranceId);
 }

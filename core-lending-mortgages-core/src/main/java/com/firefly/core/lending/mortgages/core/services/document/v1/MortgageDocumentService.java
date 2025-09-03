@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.document.v1.MortgageDocumentDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageDocumentService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgageDocumentService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage documents
      * @return a reactive wrapper containing a paginated response of MortgageDocumentDTOs
      */
-    Mono<PaginationResponse<MortgageDocumentDTO>> findAll(Long mortgageApplicationId,
+    Mono<PaginationResponse<MortgageDocumentDTO>> findAll(UUID mortgageApplicationId,
                                                           FilterRequest<MortgageDocumentDTO> filterRequest);
 
     /**
@@ -25,12 +25,12 @@ public interface MortgageDocumentService {
      * @param dto the data transfer object containing details of the mortgage document to be created
      * @return a Mono emitting the created MortgageDocumentDTO instance upon successful creation
      */
-    Mono<MortgageDocumentDTO> create(Long mortgageApplicationId, MortgageDocumentDTO dto);
+    Mono<MortgageDocumentDTO> create(UUID mortgageApplicationId, MortgageDocumentDTO dto);
 
     /**
      *
      */
-    Mono<MortgageDocumentDTO> getById(Long mortgageApplicationId, Long documentId);
+    Mono<MortgageDocumentDTO> getById(UUID mortgageApplicationId, UUID documentId);
 
     /**
      * Updates an existing mortgage document associated with a specific mortgage application.
@@ -40,7 +40,7 @@ public interface MortgageDocumentService {
      * @param dto the data transfer object containing the updated details of the mortgage document
      * @return a Mono emitting the updated MortgageDocumentDTO upon successful update, or an error if the update operation fails
      */
-    Mono<MortgageDocumentDTO> update(Long mortgageApplicationId, Long documentId, MortgageDocumentDTO dto);
+    Mono<MortgageDocumentDTO> update(UUID mortgageApplicationId, UUID documentId, MortgageDocumentDTO dto);
 
     /**
      * Deletes a specific document associated with a mortgage application.
@@ -49,5 +49,5 @@ public interface MortgageDocumentService {
      * @param documentId the unique identifier of the document to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageApplicationId, Long documentId);
+    Mono<Void> delete(UUID mortgageApplicationId, UUID documentId);
 }

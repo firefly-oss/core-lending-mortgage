@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageApplicationStatusHistoryServiceImpl implements MortgageApplicationStatusHistoryService {
@@ -23,7 +23,7 @@ public class MortgageApplicationStatusHistoryServiceImpl implements MortgageAppl
     private MortgageApplicationStatusHistoryMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgageApplicationStatusHistoryDTO>> findAll(Long mortgageApplicationId, FilterRequest<MortgageApplicationStatusHistoryDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgageApplicationStatusHistoryDTO>> findAll(UUID mortgageApplicationId, FilterRequest<MortgageApplicationStatusHistoryDTO> filterRequest) {
         filterRequest.getFilters().setMortgageApplicationId(mortgageApplicationId);
         return FilterUtils.createFilter(
                 MortgageApplicationStatusHistory.class,
@@ -32,7 +32,7 @@ public class MortgageApplicationStatusHistoryServiceImpl implements MortgageAppl
     }
 
     @Override
-    public Mono<MortgageApplicationStatusHistoryDTO> create(Long mortgageApplicationId, MortgageApplicationStatusHistoryDTO dto) {
+    public Mono<MortgageApplicationStatusHistoryDTO> create(UUID mortgageApplicationId, MortgageApplicationStatusHistoryDTO dto) {
         MortgageApplicationStatusHistory entity = mapper.toEntity(dto);
         entity.setMortgageApplicationId(mortgageApplicationId);
         return repository.save(entity)
@@ -40,14 +40,14 @@ public class MortgageApplicationStatusHistoryServiceImpl implements MortgageAppl
     }
 
     @Override
-    public Mono<MortgageApplicationStatusHistoryDTO> getById(Long mortgageApplicationId, Long statusHistoryId) {
+    public Mono<MortgageApplicationStatusHistoryDTO> getById(UUID mortgageApplicationId, UUID statusHistoryId) {
         return repository.findById(statusHistoryId)
                 .filter(entity -> entity.getMortgageApplicationId().equals(mortgageApplicationId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgageApplicationStatusHistoryDTO> update(Long mortgageApplicationId, Long statusHistoryId, MortgageApplicationStatusHistoryDTO dto) {
+    public Mono<MortgageApplicationStatusHistoryDTO> update(UUID mortgageApplicationId, UUID statusHistoryId, MortgageApplicationStatusHistoryDTO dto) {
         return repository.findById(statusHistoryId)
                 .filter(entity -> entity.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(existingEntity -> {
@@ -60,7 +60,7 @@ public class MortgageApplicationStatusHistoryServiceImpl implements MortgageAppl
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageApplicationId, Long statusHistoryId) {
+    public Mono<Void> delete(UUID mortgageApplicationId, UUID statusHistoryId) {
         return repository.findById(statusHistoryId)
                 .filter(entity -> entity.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(repository::delete);

@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.record.v1.MortgagePaymentRecordDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgagePaymentRecordService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgagePaymentRecordService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage payment records
      * @return a reactive wrapper containing a paginated response of MortgagePaymentRecordDTOs
      */
-    Mono<PaginationResponse<MortgagePaymentRecordDTO>> findAll(Long mortgageContractId,
+    Mono<PaginationResponse<MortgagePaymentRecordDTO>> findAll(UUID mortgageContractId,
                                                                FilterRequest<MortgagePaymentRecordDTO> filterRequest);
 
     /**
@@ -25,7 +25,7 @@ public interface MortgagePaymentRecordService {
      * @param dto the data transfer object containing the details of the mortgage payment record to be created
      * @return a Mono emitting the created MortgagePaymentRecordDTO instance upon successful creation
      */
-    Mono<MortgagePaymentRecordDTO> create(Long mortgageContractId, MortgagePaymentRecordDTO dto);
+    Mono<MortgagePaymentRecordDTO> create(UUID mortgageContractId, MortgagePaymentRecordDTO dto);
 
     /**
      * Retrieves a specific mortgage payment record associated with a given mortgage contract.
@@ -35,7 +35,7 @@ public interface MortgagePaymentRecordService {
      * @return a Mono emitting the MortgagePaymentRecordDTO corresponding to the specified IDs,
      *         or an empty Mono if no record is found
      */
-    Mono<MortgagePaymentRecordDTO> getById(Long mortgageContractId, Long paymentRecordId);
+    Mono<MortgagePaymentRecordDTO> getById(UUID mortgageContractId, UUID paymentRecordId);
 
     /**
      * Updates an existing mortgage payment record associated with a specific mortgage contract.
@@ -46,7 +46,7 @@ public interface MortgagePaymentRecordService {
      * @return a Mono emitting the updated MortgagePaymentRecordDTO upon successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgagePaymentRecordDTO> update(Long mortgageContractId, Long paymentRecordId,
+    Mono<MortgagePaymentRecordDTO> update(UUID mortgageContractId, UUID paymentRecordId,
                                           MortgagePaymentRecordDTO dto);
 
     /**
@@ -56,5 +56,5 @@ public interface MortgagePaymentRecordService {
      * @param paymentRecordId the unique identifier of the payment record to be deleted
      * @return a {@code Mono<Void>} signaling the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageContractId, Long paymentRecordId);
+    Mono<Void> delete(UUID mortgageContractId, UUID paymentRecordId);
 }

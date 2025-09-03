@@ -5,6 +5,8 @@ import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.application.v1.MortgageApplicationDTO;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 public interface MortgageApplicationService {
 
     /**
@@ -30,7 +32,7 @@ public interface MortgageApplicationService {
      * @return a Mono emitting the MortgageApplicationDTO corresponding to the given identifier,
      *         or an empty Mono if no mortgage application is found
      */
-    Mono<MortgageApplicationDTO> getById(Long mortgageApplicationId);
+    Mono<MortgageApplicationDTO> getById(UUID mortgageApplicationId);
 
     /**
      * Updates an existing mortgage application with the provided data.
@@ -39,7 +41,7 @@ public interface MortgageApplicationService {
      * @param dto the data transfer object containing the updated details of the mortgage application
      * @return a Mono emitting the updated MortgageApplicationDTO upon successful update, or an error if the update fails
      */
-    Mono<MortgageApplicationDTO> update(Long mortgageApplicationId, MortgageApplicationDTO dto);
+    Mono<MortgageApplicationDTO> update(UUID mortgageApplicationId, MortgageApplicationDTO dto);
 
     /**
      * Deletes a mortgage application identified by its ID.
@@ -47,5 +49,5 @@ public interface MortgageApplicationService {
      * @param mortgageApplicationId the unique identifier of the mortgage application to be deleted
      * @return a {@code Mono<Void>} indicating completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageApplicationId);
+    Mono<Void> delete(UUID mortgageApplicationId);
 }

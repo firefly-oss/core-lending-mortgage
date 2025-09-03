@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageAppraisalServiceImpl implements MortgageAppraisalService {
@@ -23,7 +23,7 @@ public class MortgageAppraisalServiceImpl implements MortgageAppraisalService {
     private MortgageAppraisalMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgageAppraisalDTO>> findAll(Long mortgageApplicationId, FilterRequest<MortgageAppraisalDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgageAppraisalDTO>> findAll(UUID mortgageApplicationId, FilterRequest<MortgageAppraisalDTO> filterRequest) {
         filterRequest.getFilters().setMortgageApplicationId(mortgageApplicationId);
         return FilterUtils.createFilter(
                 MortgageAppraisal.class,
@@ -32,7 +32,7 @@ public class MortgageAppraisalServiceImpl implements MortgageAppraisalService {
     }
 
     @Override
-    public Mono<MortgageAppraisalDTO> create(Long mortgageApplicationId, MortgageAppraisalDTO dto) {
+    public Mono<MortgageAppraisalDTO> create(UUID mortgageApplicationId, MortgageAppraisalDTO dto) {
         dto.setMortgageApplicationId(mortgageApplicationId);
         MortgageAppraisal entity = mapper.toEntity(dto);
         return repository.save(entity)
@@ -40,14 +40,14 @@ public class MortgageAppraisalServiceImpl implements MortgageAppraisalService {
     }
 
     @Override
-    public Mono<MortgageAppraisalDTO> getById(Long mortgageApplicationId, Long appraisalId) {
+    public Mono<MortgageAppraisalDTO> getById(UUID mortgageApplicationId, UUID appraisalId) {
         return repository.findById(appraisalId)
                 .filter(appraisal -> appraisal.getMortgageApplicationId().equals(mortgageApplicationId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgageAppraisalDTO> update(Long mortgageApplicationId, Long appraisalId, MortgageAppraisalDTO dto) {
+    public Mono<MortgageAppraisalDTO> update(UUID mortgageApplicationId, UUID appraisalId, MortgageAppraisalDTO dto) {
         return repository.findById(appraisalId)
                 .filter(appraisal -> appraisal.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(existing -> {
@@ -60,7 +60,7 @@ public class MortgageAppraisalServiceImpl implements MortgageAppraisalService {
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageApplicationId, Long appraisalId) {
+    public Mono<Void> delete(UUID mortgageApplicationId, UUID appraisalId) {
         return repository.findById(appraisalId)
                 .filter(appraisal -> appraisal.getMortgageApplicationId().equals(mortgageApplicationId))
                 .flatMap(repository::delete);

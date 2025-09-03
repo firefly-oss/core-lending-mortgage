@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.disbursement.v1.MortgageDisbursementDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageDisbursementService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgageDisbursementService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage disbursements
      * @return a reactive wrapper containing a paginated response of MortgageDisbursementDTOs
      */
-    Mono<PaginationResponse<MortgageDisbursementDTO>> findAll(Long mortgageContractId,
+    Mono<PaginationResponse<MortgageDisbursementDTO>> findAll(UUID mortgageContractId,
                                                               FilterRequest<MortgageDisbursementDTO> filterRequest);
 
     /**
@@ -25,7 +25,7 @@ public interface MortgageDisbursementService {
      * @param dto the data transfer object containing the details of the mortgage disbursement to be created
      * @return a Mono emitting the created MortgageDisbursementDTO instance upon successful creation
      */
-    Mono<MortgageDisbursementDTO> create(Long mortgageContractId, MortgageDisbursementDTO dto);
+    Mono<MortgageDisbursementDTO> create(UUID mortgageContractId, MortgageDisbursementDTO dto);
 
     /**
      * Retrieves a specific mortgage disbursement associated with a given mortgage contract.
@@ -35,7 +35,7 @@ public interface MortgageDisbursementService {
      * @return a Mono emitting the MortgageDisbursementDTO corresponding to the specified IDs,
      *         or an empty Mono if no disbursement is found
      */
-    Mono<MortgageDisbursementDTO> getById(Long mortgageContractId, Long mortgageDisbursementId);
+    Mono<MortgageDisbursementDTO> getById(UUID mortgageContractId, UUID mortgageDisbursementId);
 
     /**
      * Updates an existing mortgage disbursement with the provided details.
@@ -46,7 +46,7 @@ public interface MortgageDisbursementService {
      * @return a Mono emitting the updated MortgageDisbursementDTO upon successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgageDisbursementDTO> update(Long mortgageContractId, Long mortgageDisbursementId,
+    Mono<MortgageDisbursementDTO> update(UUID mortgageContractId, UUID mortgageDisbursementId,
                                          MortgageDisbursementDTO dto);
 
     /**
@@ -56,5 +56,5 @@ public interface MortgageDisbursementService {
      * @param mortgageDisbursementId the unique identifier of the mortgage disbursement to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageContractId, Long mortgageDisbursementId);
+    Mono<Void> delete(UUID mortgageContractId, UUID mortgageDisbursementId);
 }

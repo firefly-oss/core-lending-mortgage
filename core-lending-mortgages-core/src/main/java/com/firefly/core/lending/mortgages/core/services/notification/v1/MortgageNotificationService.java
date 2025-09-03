@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.notification.v1.MortgageNotificationDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageNotificationService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgageNotificationService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage notifications
      * @return a reactive wrapper containing a paginated response of MortgageNotificationDTOs
      */
-    Mono<PaginationResponse<MortgageNotificationDTO>> findAll(Long mortgageContractId,
+    Mono<PaginationResponse<MortgageNotificationDTO>> findAll(UUID mortgageContractId,
                                                               FilterRequest<MortgageNotificationDTO> filterRequest);
 
     /**
@@ -25,7 +25,7 @@ public interface MortgageNotificationService {
      * @param dto the data transfer object containing details of the mortgage notification to be created
      * @return a Mono emitting the created MortgageNotificationDTO instance upon successful creation
      */
-    Mono<MortgageNotificationDTO> create(Long mortgageContractId, MortgageNotificationDTO dto);
+    Mono<MortgageNotificationDTO> create(UUID mortgageContractId, MortgageNotificationDTO dto);
 
     /**
      * Retrieves a specific mortgage notification by its unique identifier within a given mortgage contract.
@@ -35,7 +35,7 @@ public interface MortgageNotificationService {
      * @return a Mono emitting the MortgageNotificationDTO corresponding to the specified identifiers,
      *         or an empty Mono if no notification is found
      */
-    Mono<MortgageNotificationDTO> getById(Long mortgageContractId, Long notificationId);
+    Mono<MortgageNotificationDTO> getById(UUID mortgageContractId, UUID notificationId);
 
     /**
      * Updates an existing mortgage notification associated with a specified mortgage contract.
@@ -46,7 +46,7 @@ public interface MortgageNotificationService {
      * @return a Mono emitting the updated MortgageNotificationDTO upon successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgageNotificationDTO> update(Long mortgageContractId, Long notificationId,
+    Mono<MortgageNotificationDTO> update(UUID mortgageContractId, UUID notificationId,
                                          MortgageNotificationDTO dto);
 
     /**
@@ -56,5 +56,5 @@ public interface MortgageNotificationService {
      * @param notificationId the unique identifier of the notification to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageContractId, Long notificationId);
+    Mono<Void> delete(UUID mortgageContractId, UUID notificationId);
 }

@@ -4,7 +4,7 @@ import com.firefly.common.core.filters.FilterRequest;
 import com.firefly.common.core.queries.PaginationResponse;
 import com.firefly.core.lending.mortgages.interfaces.dtos.appraisal.v1.MortgageAppraisalDTO;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 public interface MortgageAppraisalService {
 
     /**
@@ -15,7 +15,7 @@ public interface MortgageAppraisalService {
      * @param filterRequest the filter criteria and pagination details for retrieving mortgage appraisals
      * @return a reactive wrapper containing a paginated response of MortgageAppraisalDTOs
      */
-    Mono<PaginationResponse<MortgageAppraisalDTO>> findAll(Long mortgageApplicationId,
+    Mono<PaginationResponse<MortgageAppraisalDTO>> findAll(UUID mortgageApplicationId,
                                                            FilterRequest<MortgageAppraisalDTO> filterRequest);
 
     /**
@@ -25,7 +25,7 @@ public interface MortgageAppraisalService {
      * @param dto the data transfer object containing details of the mortgage appraisal to be created
      * @return a Mono emitting the created MortgageAppraisalDTO instance upon successful creation
      */
-    Mono<MortgageAppraisalDTO> create(Long mortgageApplicationId, MortgageAppraisalDTO dto);
+    Mono<MortgageAppraisalDTO> create(UUID mortgageApplicationId, MortgageAppraisalDTO dto);
 
     /**
      * Retrieves a specific mortgage appraisal associated with a given mortgage application and appraisal ID.
@@ -34,7 +34,7 @@ public interface MortgageAppraisalService {
      * @param appraisalId the unique identifier of the appraisal to be retrieved
      * @return a Mono emitting the MortgageAppraisalDTO corresponding to the specified IDs, or an empty Mono if no appraisal is found
      */
-    Mono<MortgageAppraisalDTO> getById(Long mortgageApplicationId, Long appraisalId);
+    Mono<MortgageAppraisalDTO> getById(UUID mortgageApplicationId, UUID appraisalId);
 
     /**
      * Updates an existing mortgage appraisal associated with a specific mortgage application.
@@ -45,7 +45,7 @@ public interface MortgageAppraisalService {
      * @return a Mono emitting the updated MortgageAppraisalDTO upon successful update,
      *         or an error if the update operation fails
      */
-    Mono<MortgageAppraisalDTO> update(Long mortgageApplicationId, Long appraisalId, MortgageAppraisalDTO dto);
+    Mono<MortgageAppraisalDTO> update(UUID mortgageApplicationId, UUID appraisalId, MortgageAppraisalDTO dto);
 
     /**
      * Deletes a specific appraisal associated with a mortgage application.
@@ -54,5 +54,5 @@ public interface MortgageAppraisalService {
      * @param appraisalId the unique identifier of the appraisal to be deleted
      * @return a {@code Mono<Void>} indicating the completion of the delete operation
      */
-    Mono<Void> delete(Long mortgageApplicationId, Long appraisalId);
+    Mono<Void> delete(UUID mortgageApplicationId, UUID appraisalId);
 }

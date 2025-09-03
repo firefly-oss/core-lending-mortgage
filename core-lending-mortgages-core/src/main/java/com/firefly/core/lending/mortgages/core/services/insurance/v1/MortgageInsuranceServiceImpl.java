@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgageInsuranceServiceImpl implements MortgageInsuranceService {
@@ -23,7 +23,7 @@ public class MortgageInsuranceServiceImpl implements MortgageInsuranceService {
     private MortgageInsuranceMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgageInsuranceDTO>> findAll(Long mortgageContractId, FilterRequest<MortgageInsuranceDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgageInsuranceDTO>> findAll(UUID mortgageContractId, FilterRequest<MortgageInsuranceDTO> filterRequest) {
         filterRequest.getFilters().setMortgageContractId(mortgageContractId);
         return FilterUtils.createFilter(
                 MortgageInsurance.class,
@@ -32,7 +32,7 @@ public class MortgageInsuranceServiceImpl implements MortgageInsuranceService {
     }
 
     @Override
-    public Mono<MortgageInsuranceDTO> create(Long mortgageContractId, MortgageInsuranceDTO dto) {
+    public Mono<MortgageInsuranceDTO> create(UUID mortgageContractId, MortgageInsuranceDTO dto) {
         dto.setMortgageContractId(mortgageContractId);
         MortgageInsurance entity = mapper.toEntity(dto);
         return Mono.just(entity)
@@ -41,14 +41,14 @@ public class MortgageInsuranceServiceImpl implements MortgageInsuranceService {
     }
 
     @Override
-    public Mono<MortgageInsuranceDTO> getById(Long mortgageContractId, Long insuranceId) {
+    public Mono<MortgageInsuranceDTO> getById(UUID mortgageContractId, UUID insuranceId) {
         return repository.findById(insuranceId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgageInsuranceDTO> update(Long mortgageContractId, Long insuranceId, MortgageInsuranceDTO dto) {
+    public Mono<MortgageInsuranceDTO> update(UUID mortgageContractId, UUID insuranceId, MortgageInsuranceDTO dto) {
         return repository.findById(insuranceId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(existingEntity -> {
@@ -61,7 +61,7 @@ public class MortgageInsuranceServiceImpl implements MortgageInsuranceService {
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageContractId, Long insuranceId) {
+    public Mono<Void> delete(UUID mortgageContractId, UUID insuranceId) {
         return repository.findById(insuranceId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(repository::delete);

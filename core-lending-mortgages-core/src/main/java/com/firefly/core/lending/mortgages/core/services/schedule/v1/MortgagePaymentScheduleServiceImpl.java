@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgagePaymentScheduleServiceImpl implements MortgagePaymentScheduleService {
@@ -23,7 +23,7 @@ public class MortgagePaymentScheduleServiceImpl implements MortgagePaymentSchedu
     private MortgagePaymentScheduleMapper mapper;
 
     @Override
-    public Mono<PaginationResponse<MortgagePaymentScheduleDTO>> findAll(Long mortgageContractId, FilterRequest<MortgagePaymentScheduleDTO> filterRequest) {
+    public Mono<PaginationResponse<MortgagePaymentScheduleDTO>> findAll(UUID mortgageContractId, FilterRequest<MortgagePaymentScheduleDTO> filterRequest) {
         filterRequest.getFilters().setMortgageContractId(mortgageContractId);
         return FilterUtils.createFilter(
                 MortgagePaymentSchedule.class,
@@ -32,7 +32,7 @@ public class MortgagePaymentScheduleServiceImpl implements MortgagePaymentSchedu
     }
 
     @Override
-    public Mono<MortgagePaymentScheduleDTO> create(Long mortgageContractId, MortgagePaymentScheduleDTO dto) {
+    public Mono<MortgagePaymentScheduleDTO> create(UUID mortgageContractId, MortgagePaymentScheduleDTO dto) {
         dto.setMortgageContractId(mortgageContractId);
         MortgagePaymentSchedule entity = mapper.toEntity(dto);
         return repository.save(entity)
@@ -40,14 +40,14 @@ public class MortgagePaymentScheduleServiceImpl implements MortgagePaymentSchedu
     }
 
     @Override
-    public Mono<MortgagePaymentScheduleDTO> getById(Long mortgageContractId, Long scheduleId) {
+    public Mono<MortgagePaymentScheduleDTO> getById(UUID mortgageContractId, UUID scheduleId) {
         return repository.findById(scheduleId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .map(mapper::toDTO);
     }
 
     @Override
-    public Mono<MortgagePaymentScheduleDTO> update(Long mortgageContractId, Long scheduleId, MortgagePaymentScheduleDTO dto) {
+    public Mono<MortgagePaymentScheduleDTO> update(UUID mortgageContractId, UUID scheduleId, MortgagePaymentScheduleDTO dto) {
         return repository.findById(scheduleId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(entity -> {
@@ -60,7 +60,7 @@ public class MortgagePaymentScheduleServiceImpl implements MortgagePaymentSchedu
     }
 
     @Override
-    public Mono<Void> delete(Long mortgageContractId, Long scheduleId) {
+    public Mono<Void> delete(UUID mortgageContractId, UUID scheduleId) {
         return repository.findById(scheduleId)
                 .filter(entity -> entity.getMortgageContractId().equals(mortgageContractId))
                 .flatMap(repository::delete);

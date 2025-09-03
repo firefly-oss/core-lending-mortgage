@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
+import java.util.UUID;
 @Service
 @Transactional
 public class MortgagePropertyServiceImpl implements MortgagePropertyService {
@@ -39,14 +39,14 @@ public class MortgagePropertyServiceImpl implements MortgagePropertyService {
     }
 
     @Override
-    public Mono<MortgagePropertyDTO> getById(Long propertyId) {
+    public Mono<MortgagePropertyDTO> getById(UUID propertyId) {
         return repository.findById(propertyId)
                 .map(mapper::toDTO)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Mortgage property not found with ID: " + propertyId)));
     }
 
     @Override
-    public Mono<MortgagePropertyDTO> update(Long propertyId, MortgagePropertyDTO dto) {
+    public Mono<MortgagePropertyDTO> update(UUID propertyId, MortgagePropertyDTO dto) {
         return repository.findById(propertyId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Mortgage property not found with ID: " + propertyId)))
                 .flatMap(existingProperty -> {
@@ -57,7 +57,7 @@ public class MortgagePropertyServiceImpl implements MortgagePropertyService {
     }
 
     @Override
-    public Mono<Void> delete(Long propertyId) {
+    public Mono<Void> delete(UUID propertyId) {
         return repository.findById(propertyId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Mortgage property not found with ID: " + propertyId)))
                 .flatMap(repository::delete);
