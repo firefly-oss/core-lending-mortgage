@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-@RestController
+import java.util.UUID;
+
+import jakarta.validation.Valid;@RestController
 @RequestMapping("/api/v1/mortgage-contracts")
 @Tag(name = "MortgageContract", description = "Operations on final mortgage contracts")
 @RequiredArgsConstructor
@@ -29,29 +31,29 @@ public class MortgageContractController {
     @PostMapping
     @Operation(summary = "Create a new mortgage contract")
     public Mono<ResponseEntity<MortgageContractDTO>> create(
-            @RequestBody MortgageContractDTO dto) {
+            @Valid @RequestBody MortgageContractDTO dto) {
         return service.create(dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{mortgageContractId}")
     @Operation(summary = "Get a mortgage contract by ID")
     public Mono<ResponseEntity<MortgageContractDTO>> getById(
-            @PathVariable Long mortgageContractId) {
+            @PathVariable UUID mortgageContractId) {
         return service.getById(mortgageContractId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{mortgageContractId}")
     @Operation(summary = "Update a mortgage contract")
     public Mono<ResponseEntity<MortgageContractDTO>> update(
-            @PathVariable Long mortgageContractId,
-            @RequestBody MortgageContractDTO dto) {
+            @PathVariable UUID mortgageContractId,
+            @Valid @RequestBody MortgageContractDTO dto) {
         return service.update(mortgageContractId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{mortgageContractId}")
     @Operation(summary = "Delete a mortgage contract")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long mortgageContractId) {
+            @PathVariable UUID mortgageContractId) {
         return service.delete(mortgageContractId)
                 .thenReturn(ResponseEntity.noContent().build());
     }

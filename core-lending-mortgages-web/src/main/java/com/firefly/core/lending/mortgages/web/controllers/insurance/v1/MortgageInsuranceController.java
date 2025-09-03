@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-@RestController
+import java.util.UUID;
+
+import jakarta.validation.Valid;@RestController
 @RequestMapping("/api/v1/mortgage-contracts/{mortgageContractId}/insurance")
 @Tag(name = "MortgageInsurance", description = "Insurance policies associated with a mortgage contract")
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class MortgageInsuranceController {
     @GetMapping
     @Operation(summary = "List or search insurance policies for a mortgage contract")
     public Mono<ResponseEntity<PaginationResponse<MortgageInsuranceDTO>>> findAll(
-            @PathVariable Long mortgageContractId,
+            @PathVariable UUID mortgageContractId,
             @ModelAttribute FilterRequest<MortgageInsuranceDTO> filterRequest) {
         return service.findAll(mortgageContractId, filterRequest).map(ResponseEntity::ok);
     }
@@ -30,33 +32,33 @@ public class MortgageInsuranceController {
     @PostMapping
     @Operation(summary = "Create a new mortgage insurance record")
     public Mono<ResponseEntity<MortgageInsuranceDTO>> create(
-            @PathVariable Long mortgageContractId,
-            @RequestBody MortgageInsuranceDTO dto) {
+            @PathVariable UUID mortgageContractId,
+            @Valid @RequestBody MortgageInsuranceDTO dto) {
         return service.create(mortgageContractId, dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{insuranceId}")
     @Operation(summary = "Get an insurance record by ID")
     public Mono<ResponseEntity<MortgageInsuranceDTO>> getById(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long insuranceId) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID insuranceId) {
         return service.getById(mortgageContractId, insuranceId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{insuranceId}")
     @Operation(summary = "Update an insurance record")
     public Mono<ResponseEntity<MortgageInsuranceDTO>> update(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long insuranceId,
-            @RequestBody MortgageInsuranceDTO dto) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID insuranceId,
+            @Valid @RequestBody MortgageInsuranceDTO dto) {
         return service.update(mortgageContractId, insuranceId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{insuranceId}")
     @Operation(summary = "Delete an insurance record")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long insuranceId) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID insuranceId) {
         return service.delete(mortgageContractId, insuranceId)
                 .thenReturn(ResponseEntity.noContent().build());
     }

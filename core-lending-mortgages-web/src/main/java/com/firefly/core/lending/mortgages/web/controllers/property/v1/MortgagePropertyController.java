@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-@RestController
+import java.util.UUID;
+
+import jakarta.validation.Valid;@RestController
 @RequestMapping("/api/v1/mortgage-properties")
 @Tag(name = "MortgageProperty", description = "Management of properties used as collateral for mortgages")
 @RequiredArgsConstructor
@@ -29,29 +31,29 @@ public class MortgagePropertyController {
     @PostMapping
     @Operation(summary = "Create a new property record")
     public Mono<ResponseEntity<MortgagePropertyDTO>> create(
-            @RequestBody MortgagePropertyDTO dto) {
+            @Valid @RequestBody MortgagePropertyDTO dto) {
         return service.create(dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{propertyId}")
     @Operation(summary = "Get a property record by ID")
     public Mono<ResponseEntity<MortgagePropertyDTO>> getById(
-            @PathVariable Long propertyId) {
+            @PathVariable UUID propertyId) {
         return service.getById(propertyId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{propertyId}")
     @Operation(summary = "Update a property record")
     public Mono<ResponseEntity<MortgagePropertyDTO>> update(
-            @PathVariable Long propertyId,
-            @RequestBody MortgagePropertyDTO dto) {
+            @PathVariable UUID propertyId,
+            @Valid @RequestBody MortgagePropertyDTO dto) {
         return service.update(propertyId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{propertyId}")
     @Operation(summary = "Delete a property record")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long propertyId) {
+            @PathVariable UUID propertyId) {
         return service.delete(propertyId)
                 .thenReturn(ResponseEntity.noContent().build());
     }

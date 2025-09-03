@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/mortgage-applications/{mortgageApplicationId}/status-history")
 @Tag(name = "MortgageApplicationStatusHistory", description = "Status history logs for a mortgage application")
@@ -22,7 +25,7 @@ public class MortgageApplicationStatusHistoryController {
     @GetMapping
     @Operation(summary = "List or search application status history")
     public Mono<ResponseEntity<PaginationResponse<MortgageApplicationStatusHistoryDTO>>> findAll(
-            @PathVariable Long mortgageApplicationId,
+            @PathVariable UUID mortgageApplicationId,
             @ModelAttribute FilterRequest<MortgageApplicationStatusHistoryDTO> filterRequest) {
         return service.findAll(mortgageApplicationId, filterRequest).map(ResponseEntity::ok);
     }
@@ -30,33 +33,33 @@ public class MortgageApplicationStatusHistoryController {
     @PostMapping
     @Operation(summary = "Create a new status change record")
     public Mono<ResponseEntity<MortgageApplicationStatusHistoryDTO>> create(
-            @PathVariable Long mortgageApplicationId,
-            @RequestBody MortgageApplicationStatusHistoryDTO dto) {
+            @PathVariable UUID mortgageApplicationId,
+            @Valid @RequestBody MortgageApplicationStatusHistoryDTO dto) {
         return service.create(mortgageApplicationId, dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{statusHistoryId}")
     @Operation(summary = "Get a status history record by ID")
     public Mono<ResponseEntity<MortgageApplicationStatusHistoryDTO>> getById(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long statusHistoryId) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID statusHistoryId) {
         return service.getById(mortgageApplicationId, statusHistoryId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{statusHistoryId}")
     @Operation(summary = "Update a status history record")
     public Mono<ResponseEntity<MortgageApplicationStatusHistoryDTO>> update(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long statusHistoryId,
-            @RequestBody MortgageApplicationStatusHistoryDTO dto) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID statusHistoryId,
+            @Valid @RequestBody MortgageApplicationStatusHistoryDTO dto) {
         return service.update(mortgageApplicationId, statusHistoryId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{statusHistoryId}")
     @Operation(summary = "Delete a status history record")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long statusHistoryId) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID statusHistoryId) {
         return service.delete(mortgageApplicationId, statusHistoryId)
                 .thenReturn(ResponseEntity.noContent().build());
     }

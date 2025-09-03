@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-@RestController
+import java.util.UUID;
+
+import jakarta.validation.Valid;@RestController
 @RequestMapping("/api/v1/mortgage-contracts/{mortgageContractId}/disbursements")
 @Tag(name = "MortgageDisbursement", description = "Record of funds disbursed under a mortgage contract")
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class MortgageDisbursementController {
     @GetMapping
     @Operation(summary = "List or search mortgage disbursements for a contract")
     public Mono<ResponseEntity<PaginationResponse<MortgageDisbursementDTO>>> findAll(
-            @PathVariable Long mortgageContractId,
+            @PathVariable UUID mortgageContractId,
             @ModelAttribute FilterRequest<MortgageDisbursementDTO> filterRequest) {
         return service.findAll(mortgageContractId, filterRequest).map(ResponseEntity::ok);
     }
@@ -30,33 +32,33 @@ public class MortgageDisbursementController {
     @PostMapping
     @Operation(summary = "Create a new disbursement record")
     public Mono<ResponseEntity<MortgageDisbursementDTO>> create(
-            @PathVariable Long mortgageContractId,
-            @RequestBody MortgageDisbursementDTO dto) {
+            @PathVariable UUID mortgageContractId,
+            @Valid @RequestBody MortgageDisbursementDTO dto) {
         return service.create(mortgageContractId, dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{mortgageDisbursementId}")
     @Operation(summary = "Get a disbursement record by ID")
     public Mono<ResponseEntity<MortgageDisbursementDTO>> getById(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long mortgageDisbursementId) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID mortgageDisbursementId) {
         return service.getById(mortgageContractId, mortgageDisbursementId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{mortgageDisbursementId}")
     @Operation(summary = "Update a disbursement record")
     public Mono<ResponseEntity<MortgageDisbursementDTO>> update(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long mortgageDisbursementId,
-            @RequestBody MortgageDisbursementDTO dto) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID mortgageDisbursementId,
+            @Valid @RequestBody MortgageDisbursementDTO dto) {
         return service.update(mortgageContractId, mortgageDisbursementId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{mortgageDisbursementId}")
     @Operation(summary = "Delete a disbursement record")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long mortgageContractId,
-            @PathVariable Long mortgageDisbursementId) {
+            @PathVariable UUID mortgageContractId,
+            @PathVariable UUID mortgageDisbursementId) {
         return service.delete(mortgageContractId, mortgageDisbursementId)
                 .thenReturn(ResponseEntity.noContent().build());
     }

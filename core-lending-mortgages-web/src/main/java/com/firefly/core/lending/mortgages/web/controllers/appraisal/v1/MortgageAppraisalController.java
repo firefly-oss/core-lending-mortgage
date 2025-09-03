@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-@RestController
+import java.util.UUID;
+
+import jakarta.validation.Valid;@RestController
 @RequestMapping("/api/v1/mortgage-applications/{mortgageApplicationId}/appraisals")
 @Tag(name = "MortgageAppraisal", description = "Appraisal records for a mortgage application")
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class MortgageAppraisalController {
     @GetMapping
     @Operation(summary = "List or search appraisals for a mortgage application")
     public Mono<ResponseEntity<PaginationResponse<MortgageAppraisalDTO>>> findAll(
-            @PathVariable Long mortgageApplicationId,
+            @PathVariable UUID mortgageApplicationId,
             @ModelAttribute FilterRequest<MortgageAppraisalDTO> filterRequest) {
         return service.findAll(mortgageApplicationId, filterRequest).map(ResponseEntity::ok);
     }
@@ -30,33 +32,33 @@ public class MortgageAppraisalController {
     @PostMapping
     @Operation(summary = "Create a new appraisal record")
     public Mono<ResponseEntity<MortgageAppraisalDTO>> create(
-            @PathVariable Long mortgageApplicationId,
-            @RequestBody MortgageAppraisalDTO dto) {
+            @PathVariable UUID mortgageApplicationId,
+            @Valid @RequestBody MortgageAppraisalDTO dto) {
         return service.create(mortgageApplicationId, dto).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{appraisalId}")
     @Operation(summary = "Get an appraisal record by ID")
     public Mono<ResponseEntity<MortgageAppraisalDTO>> getById(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long appraisalId) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID appraisalId) {
         return service.getById(mortgageApplicationId, appraisalId).map(ResponseEntity::ok);
     }
 
     @PutMapping("/{appraisalId}")
     @Operation(summary = "Update an appraisal record")
     public Mono<ResponseEntity<MortgageAppraisalDTO>> update(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long appraisalId,
-            @RequestBody MortgageAppraisalDTO dto) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID appraisalId,
+            @Valid @RequestBody MortgageAppraisalDTO dto) {
         return service.update(mortgageApplicationId, appraisalId, dto).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{appraisalId}")
     @Operation(summary = "Delete an appraisal record")
     public Mono<ResponseEntity<Void>> delete(
-            @PathVariable Long mortgageApplicationId,
-            @PathVariable Long appraisalId) {
+            @PathVariable UUID mortgageApplicationId,
+            @PathVariable UUID appraisalId) {
         return service.delete(mortgageApplicationId, appraisalId)
                 .thenReturn(ResponseEntity.noContent().build());
     }
