@@ -6,393 +6,348 @@
 
 ## Overview
 
-The **Core Lending Mortgages Microservice** is a critical component of the **Firefly OpenCore Banking Platform**, developed by **Firefly Software Solutions Inc** under the Apache 2.0 license. This microservice provides comprehensive mortgage management capabilities, handling the complete lifecycle from application submission to contract management, payment processing, and regulatory compliance.
+The **Core Lending Mortgages Microservice** is a specialized component of the **Firefly OpenCore Banking Platform**, developed by **Firefly Software Solutions Inc** under the Apache 2.0 license. This microservice is responsible for managing **mortgage-specific contractual terms and legal documentation**.
 
-As part of the Firefly OpenCore ecosystem, this service delivers enterprise-grade mortgage processing capabilities with reactive architecture, ensuring high performance and scalability for financial institutions.
+This service provides a focused, cohesive domain model for mortgage agreements, handling only the contractual and legal aspects that are unique to mortgage products. All operational servicing (payments, disbursements, accruals, notifications, rate changes) is delegated to the **core-lending-loan-servicing** microservice.
 
 **Organization**: [firefly-oss](https://github.com/firefly-oss)  
 **Website**: [getfirefly.io](https://getfirefly.io)  
 **License**: Apache 2.0
 
-## Features
-
-- **Mortgage Application Management**: Complete application lifecycle with status tracking
-- **Property Management**: Comprehensive property information and appraisal handling
-- **Contract Management**: Mortgage contract creation, modification, and tracking
-- **Payment Processing**: Payment schedules, records, and automated calculations
-- **Insurance Management**: Mortgage insurance policies and coverage tracking
-- **Disbursement Control**: Loan disbursement management and tracking
-- **Notification System**: Automated alerts and notifications
-- **Reactive Architecture**: Built with Spring WebFlux for high-performance processing
-- **RESTful API**: Comprehensive REST API with OpenAPI documentation
-
 ## Architecture
 
-### Module Structure
+### Microservices Separation of Concerns
 
-The microservice follows a modular architecture with clear separation of concerns:
+The Firefly lending platform follows a clear separation of concerns across multiple microservices:
 
-```
-core-lending-mortgages/
-├── core-lending-mortgages-core/      # Business logic and service implementations
-├── core-lending-mortgages-interfaces/ # DTOs, enums, and interface contracts
-├── core-lending-mortgages-models/     # JPA entities and database repositories
-├── core-lending-mortgages-web/       # REST controllers and web configuration
-└── core-lending-mortgages-sdk/       # Client SDK and OpenAPI specifications
-```
+| Microservice | Responsibility |
+|--------------|----------------|
+| **core-lending-loan-origination** | Loan applications, credit analysis, underwriting, proposed offers |
+| **core-lending-mortgages** | **Mortgage-specific contractual terms and legal documentation** |
+| **core-lending-loan-servicing** | Operational servicing: payments, disbursements, accruals, notifications, rate changes, installments, balances |
+| **core-lending-collateral-management** | Collateral valuation, insurance, property management |
 
-### Technology Stack
+### What This Microservice Does
+
+✅ **Mortgage Agreement Management**
+- Mortgage-specific contractual terms
+- Legal and regulatory documentation (notary, deed, registry)
+- Mortgage product classification (conventional, Islamic, reverse, government-backed)
+- Lien position and priority
+- Contractual features and permissions (assumability, portability, prepayment terms)
+
+✅ **Interest Rate Contractual Terms**
+- Initial interest rate (what was AGREED at contract signing)
+- Rate type (fixed, variable, hybrid)
+- Reference rate and margin (for variable/hybrid mortgages)
+- Rate caps, floors, and periodic caps (contractual limits)
+
+✅ **Islamic Finance Support**
+- Murabaha (cost-plus financing)
+- Ijara (lease-to-own)
+- Musharaka (partnership/joint ownership)
+- Diminishing Musharaka
+
+✅ **Global Mortgage Products**
+- 40+ mortgage types from around the world
+- Government-backed programs (FHA, VA, CMHC, Help to Buy, KfW, INFONAVIT)
+- Specialized products (bridge loans, construction, reverse mortgages)
+- Commercial and investment property mortgages
+
+### What This Microservice Does NOT Do
+
+❌ **Operational Servicing** (handled by core-lending-loan-servicing)
+- Payment schedules and installments
+- Actual payment processing
+- Disbursements
+- Interest accruals
+- Rate changes (operational changes to current rate)
+- Balance tracking
+- Notifications
+- Escrow management
+- Rebates and commissions
+
+❌ **Loan Origination** (handled by core-lending-loan-origination)
+- Loan applications
+- Credit analysis
+- Underwriting
+- Proposed offers
+
+❌ **Collateral Management** (handled by core-lending-collateral-management)
+- Property valuation
+- Insurance management
+- Collateral tracking
+
+## Technology Stack
 
 - **Java 21**: Latest LTS version with virtual threads support
-- **Spring Boot 3.x**: Application framework with reactive capabilities
+- **Spring Boot 3.x**: Modern Spring framework with native compilation support
 - **Spring WebFlux**: Reactive web framework for non-blocking I/O
-- **Spring Data R2DBC**: Reactive database connectivity
-- **PostgreSQL**: Primary database with R2DBC driver
-- **Flyway**: Database migration management
-- **Maven**: Build and dependency management
-- **Docker**: Containerization and deployment
-- **OpenAPI 3**: API documentation and specification
+- **R2DBC**: Reactive database connectivity for PostgreSQL
+- **PostgreSQL**: Primary database with advanced features
+- **Flyway**: Database migration and versioning
+- **Maven**: Build automation and dependency management
+- **OpenAPI 3**: API documentation and client generation
+- **MapStruct**: Type-safe bean mapping
 - **Lombok**: Boilerplate code reduction
+- **Docker**: Containerization and deployment
 
-## Entity Relationship Diagram
+## Data Model
 
-The following diagram illustrates the complete data model and relationships between entities:
+The microservice manages a single, focused entity:
 
-```mermaid
-erDiagram
-    MORTGAGE_APPLICATION {
-        UUID mortgage_application_id PK
-        UUID applicant_id FK "External Customer reference"
-        UUID co_applicant_id FK "Optional co-applicant"
-        UUID property_id FK
-        UUID product_id FK "External Product reference"
-        application_status application_status
-        application_channel application_channel
-        decimal requested_amount
-        int requested_term_months
-        decimal down_payment
-        decimal monthly_income
-        decimal monthly_expenses
-        employment_type employment_type
-        residence_type residence_type
-        int years_at_current_job
-        int years_at_current_address
-        purpose purpose
-        boolean existing_customer
-        text remarks
-        varchar assigned_to
-        timestamp submission_date
-        timestamp created_at
-        timestamp updated_at
-    }
+### MortgageAgreement
 
-    MORTGAGE_PROPERTY {
-        UUID property_id PK
-        property_type property_type
-        property_status property_status
-        property_use property_use
-        varchar address_line1
-        varchar address_line2
-        varchar city
-        varchar state
-        varchar postal_code
-        varchar country_code
-        decimal land_area
-        decimal built_area
-        int construction_year
-        int renovation_year
-        varchar title_number
-        varchar cadastral_reference
-        text legal_description
-        int total_rooms
-        int total_bedrooms
-        int total_bathrooms
-        boolean has_parking
-        int parking_spaces
-        boolean has_storage
-        decimal storage_area
-        boolean has_elevator
-        int floor_number
-        energy_rating energy_rating
-        text restrictions
-        timestamp created_at
-        timestamp updated_at
-    }
+The core entity representing mortgage-specific contractual terms.
 
-    MORTGAGE_APPRAISAL {
-        UUID appraisal_id PK
-        UUID property_id FK
-        UUID mortgage_application_id FK
-        varchar appraiser_name
-        varchar license_number
-        appraisal_type appraisal_type
-        decimal market_value
-        decimal rental_value
-        decimal replacement_cost
-        decimal land_value
-        decimal building_value
-        property_condition property_condition
-        location_rating location_rating
-        text comparable_properties "JSON array"
-        date appraisal_date
-        date expiry_date
-        boolean requires_repairs
-        text required_repairs
-        decimal repair_cost
-        text assumptions
-        text limitations
-        text methodology
-        text comments
-        timestamp created_at
-        timestamp updated_at
-    }
+**Key Fields:**
 
-    MORTGAGE_CONTRACT {
-        UUID mortgage_contract_id PK
-        UUID mortgage_application_id FK
-        UUID property_id FK
-        varchar contract_number
-        contract_status contract_status
-        decimal loan_amount
-        decimal interest_rate
-        rate_type rate_type
-        varchar reference_rate
-        decimal margin_rate
-        int term_months
-        date start_date
-        date maturity_date
-        decimal monthly_payment
-        decimal early_repayment_fee
-        boolean assumable
-        decimal tax_rate
-        text special_conditions "JSON format"
-        varchar notary_reference
-        timestamp signing_date
-        timestamp created_at
-        timestamp updated_at
-    }
+**External References:**
+- `applicationId`: Reference to LoanApplication (Loan Origination)
+- `servicingCaseId`: Reference to LoanServicingCase (Loan Servicing)
+- `proposedOfferId`: Reference to ProposedOffer (Loan Origination)
 
-    MORTGAGE_INSURANCE {
-        UUID insurance_id PK
-        UUID mortgage_contract_id FK
-        insurance_type insurance_type
-        varchar policy_number
-        varchar provider_name
-        varchar provider_code
-        decimal coverage_amount
-        decimal deductible_amount
-        date start_date
-        date end_date
-        decimal annual_premium
-        premium_frequency premium_frequency
-        decimal premium_amount
-        boolean bank_beneficiary
-        boolean is_active
-        date last_payment_date
-        date next_payment_date
-        text coverage_details "JSON format"
-        timestamp created_at
-        timestamp updated_at
-    }
+**Mortgage-Specific Terms:**
+- `agreementStatus`: DRAFT, ACTIVE, SUSPENDED, CLOSED, CANCELLED
+- `mortgageType`: Type of mortgage product (40+ global types)
+- `lienPosition`: FIRST, SECOND, THIRD, SUBORDINATE
 
-    MORTGAGE_DISBURSEMENT {
-        UUID disbursement_id PK
-        UUID mortgage_contract_id FK
-        decimal disbursement_amount
-        date disbursement_date
-        timestamp created_at
-        timestamp updated_at
-    }
+**Interest Rate Contractual Terms:**
+- `rateType`: FIXED, VARIABLE, HYBRID
+- `initialInterestRate`: Initial rate at contract start
+- `referenceRate`: Reference rate index (EURIBOR, LIBOR, SOFR, PRIME)
+- `marginRate`: Margin/spread added to reference rate
+- `fixedRatePeriodMonths`: Initial fixed period for hybrid mortgages
+- `rateCap`: Maximum interest rate cap (contractual limit)
+- `rateFloor`: Minimum interest rate floor (contractual limit)
+- `periodicRateCap`: Maximum rate change per adjustment period
 
-    MORTGAGE_PAYMENT_SCHEDULE {
-        UUID schedule_id PK
-        UUID mortgage_contract_id FK
-        int installment_number
-        date due_date
-        decimal principal_amount
-        decimal interest_amount
-        decimal fee_amount
-        decimal escrow_amount
-        decimal total_amount
-        payment_status payment_status
-        date paid_date
-        decimal outstanding_balance
-        decimal late_fee_amount
-        int days_late
-        text payment_breakdown "JSON detail"
-        timestamp created_at
-        timestamp updated_at
-    }
+**Islamic Finance Fields:**
+- `profitRate`: Profit rate for Islamic mortgages
+- `rentalRate`: Rental rate for Ijara mortgages
+- `bankOwnershipPercentage`: For Musharaka/diminishing Musharaka
+- `purchasePrice`: Purchase price for Murabaha
+- `markupAmount`: Markup for Murabaha
 
-    MORTGAGE_PAYMENT_RECORD {
-        UUID payment_record_id PK
-        UUID mortgage_contract_id FK
-        UUID payment_schedule_id FK "Optional link"
-        UUID transaction_id FK "External Payment reference"
-        decimal payment_amount
-        date payment_date
-        boolean is_partial_payment
-        text note
-        timestamp created_at
-        timestamp updated_at
-    }
+**Legal and Regulatory:**
+- `notaryName`, `notaryRegistrationNumber`: Notary information
+- `deedNumber`, `deedDate`: Public deed information
+- `registryOffice`, `registryVolume`, `registryBook`, `registryFolio`: Property registry information
+- `registryInscriptionDate`: Date registered in property registry
 
-    MORTGAGE_NOTIFICATION {
-        UUID notification_id PK
-        UUID mortgage_contract_id FK
-        notification_type notification_type
-        priority priority
-        varchar recipient
-        text message
-        boolean is_sent
-        timestamp sent_at
-        timestamp created_at
-    }
+**Contractual Features:**
+- `isAssumable`: Can mortgage be assumed by new buyer
+- `isPortable`: Can be transferred to new property
+- `isRecourse`: Recourse vs non-recourse loan
+- `allowsEarlyRepayment`: Early repayment allowed per contract
+- `earlyRepaymentPenaltyRate`: Contractual penalty % for early repayment
+- `earlyRepaymentPenaltyPeriodMonths`: Period during which penalty applies
+- `allowsPartialPrepayment`: Partial prepayments allowed per contract
+- `partialPrepaymentMinAmount`: Minimum amount for partial prepayment
+- `partialPrepaymentMaxPerYear`: Maximum prepayment per year
+- `subrogationAllowed`: Can be transferred to another lender
+- `subrogationFee`: Contractual fee for subrogation
 
-    %% Relationships
-    MORTGAGE_APPLICATION ||--|| MORTGAGE_PROPERTY : "references"
-    MORTGAGE_APPLICATION ||--o{ MORTGAGE_APPRAISAL : "has"
-    MORTGAGE_APPLICATION ||--o| MORTGAGE_CONTRACT : "generates"
-    MORTGAGE_PROPERTY ||--o{ MORTGAGE_APPRAISAL : "appraised_by"
-    MORTGAGE_PROPERTY ||--o{ MORTGAGE_CONTRACT : "secures"
-    MORTGAGE_CONTRACT ||--o{ MORTGAGE_INSURANCE : "protected_by"
-    MORTGAGE_CONTRACT ||--o{ MORTGAGE_DISBURSEMENT : "funded_by"
-    MORTGAGE_CONTRACT ||--o{ MORTGAGE_PAYMENT_SCHEDULE : "scheduled_in"
-    MORTGAGE_CONTRACT ||--o{ MORTGAGE_PAYMENT_RECORD : "paid_through"
-    MORTGAGE_CONTRACT ||--o{ MORTGAGE_NOTIFICATION : "notified_via"
-    MORTGAGE_PAYMENT_SCHEDULE ||--o{ MORTGAGE_PAYMENT_RECORD : "fulfilled_by"
-```
+**Audit Fields:**
+- `agreementSignedDate`: Date agreement was signed
+- `agreementEffectiveDate`: Date agreement becomes effective
+- `createdBy`, `createdAt`, `updatedBy`, `updatedAt`: Audit trail
 
-## API Endpoints
+## Enumerations
 
-The microservice provides RESTful APIs for all major entities:
+### AgreementStatusEnum
 
-### Mortgage Applications
-- `GET /api/v1/mortgage-applications` - List applications with filtering
-- `POST /api/v1/mortgage-applications` - Create new application
-- `GET /api/v1/mortgage-applications/{id}` - Get application by ID
-- `PUT /api/v1/mortgage-applications/{id}` - Update application
-- `DELETE /api/v1/mortgage-applications/{id}` - Delete application
+Agreement lifecycle status:
+- **DRAFT**: Agreement is being drafted
+- **ACTIVE**: Agreement is active
+- **SUSPENDED**: Agreement is temporarily suspended
+- **CLOSED**: Agreement is closed/completed
+- **CANCELLED**: Agreement was cancelled
 
-### Mortgage Properties
-- `GET /api/v1/mortgage-properties` - List properties
-- `POST /api/v1/mortgage-properties` - Create property
-- `GET /api/v1/mortgage-properties/{id}` - Get property details
-- `PUT /api/v1/mortgage-properties/{id}` - Update property
-- `DELETE /api/v1/mortgage-properties/{id}` - Delete property
+### MortgageTypeEnum
 
-### Mortgage Contracts
-- `GET /api/v1/mortgage-contracts` - List contracts
-- `POST /api/v1/mortgage-contracts` - Create contract
-- `GET /api/v1/mortgage-contracts/{id}` - Get contract details
-- `PUT /api/v1/mortgage-contracts/{id}` - Update contract
-- `DELETE /api/v1/mortgage-contracts/{id}` - Delete contract
+Global mortgage product types (40+ types):
 
-### Payment Management
-- `GET /api/v1/mortgage-contracts/{contractId}/payment-schedules` - Get payment schedules
-- `POST /api/v1/mortgage-contracts/{contractId}/payment-schedules` - Create schedule
-- `GET /api/v1/mortgage-contracts/{contractId}/payment-records` - Get payment records
-- `POST /api/v1/mortgage-contracts/{contractId}/payment-records` - Record payment
+**Conventional Mortgages:**
+- CONVENTIONAL_FIXED, CONVENTIONAL_VARIABLE, CONVENTIONAL_HYBRID
+- CONVENTIONAL_INTEREST_ONLY, CONVENTIONAL_BALLOON
 
-### Insurance Management
-- `GET /api/v1/mortgage-contracts/{contractId}/insurance` - List insurance policies
-- `POST /api/v1/mortgage-contracts/{contractId}/insurance` - Add insurance
-- `PUT /api/v1/mortgage-contracts/{contractId}/insurance/{id}` - Update insurance
+**Government-Backed:**
+- FHA, VA, USDA (USA)
+- CMHC (Canada)
+- HELP_TO_BUY (UK)
+- KFW (Germany)
+- INFONAVIT, FOVISSSTE (Mexico)
 
-### Notifications
-- `GET /api/v1/mortgage-contracts/{contractId}/notifications` - List notifications
-- `POST /api/v1/mortgage-contracts/{contractId}/notifications` - Create notification
+**Islamic Finance:**
+- MURABAHA (cost-plus financing)
+- IJARA (lease-to-own)
+- MUSHARAKA (partnership)
+- DIMINISHING_MUSHARAKA
+- ISTISNA (construction financing)
+
+**Reverse Mortgages:**
+- REVERSE_MORTGAGE
+- HECM (USA)
+- LIFETIME_MORTGAGE (UK)
+
+**Specialized:**
+- BRIDGE_LOAN, CONSTRUCTION_MORTGAGE, LAND_LOAN
+- RENOVATION_MORTGAGE, EQUITY_RELEASE
+- SHARED_EQUITY, SHARED_OWNERSHIP
+- RENT_TO_OWN, LEASE_PURCHASE
+
+**Commercial/Investment:**
+- COMMERCIAL_MORTGAGE, INVESTMENT_PROPERTY
+- MULTIFAMILY, MIXED_USE
+
+**International Specific:**
+- HYPOTHEEK (Dutch), BAUSPAREN (German)
+- PRET_IMMOBILIER (French), HIPOTECA (Spanish/Latin American)
+- MUTUO_IPOTECARIO (Italian)
+
+### LienPositionEnum
+
+Legal priority position:
+- **FIRST**: First lien/mortgage
+- **SECOND**: Second lien/mortgage
+- **THIRD**: Third lien/mortgage
+- **SUBORDINATE**: Subordinate lien
+
+### RateTypeEnum
+
+Interest rate structure:
+- **FIXED**: Fixed interest rate for entire term
+- **VARIABLE**: Variable/adjustable rate
+- **HYBRID**: Hybrid (fixed period then variable)
+
+## Module Structure
+
+The microservice follows a clean, modular architecture:
+
+- **`core-lending-mortgages-interfaces`**: DTOs, interfaces, enums, and API contracts
+- **`core-lending-mortgages-models`**: Entities, repositories, and database migrations
+- **`core-lending-mortgages-core`**: Business logic, service implementations, and mappers
+- **`core-lending-mortgages-web`**: REST controllers, web configuration, and application entry point
+- **`core-lending-mortgages-sdk`**: Generated client SDK for external integrations
+
+## Prerequisites
+
+- **Java Development Kit (JDK) 21** or higher
+- **Maven 3.8+** for build management
+- **PostgreSQL 13+** for database
+- **Docker** (optional, for containerized deployment)
+- **Git** for version control
 
 ## Setup and Installation
 
-### Prerequisites
-- Java 21 or higher
-- Maven 3.8+
-- PostgreSQL 13+
-- Docker (optional, for containerization)
+### Local Development
 
-### Environment Variables
-```bash
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=mortgage_db
-DB_USERNAME=mortgage_user
-DB_PASSWORD=mortgage_password
-DB_SSL_MODE=disable
+1. **Clone the repository:**
+   ```bash
+   git clone git@github.com:firefly-oss/core-lending-mortgage.git
+   cd core-lending-mortgage
+   ```
 
-# Server Configuration
-SERVER_ADDRESS=localhost
-SERVER_PORT=8080
-```
+2. **Set up environment variables:**
+   ```bash
+   export DB_HOST=localhost
+   export DB_PORT=5432
+   export DB_NAME=mortgage
+   export DB_USERNAME=your_username
+   export DB_PASSWORD=your_password
+   export DB_SSL_MODE=disable
+   ```
 
-### Building the Application
-```bash
-# Clone the repository
-git clone https://github.com/firefly-oss/core-lending-mortgage.git
-cd core-lending-mortgage
+3. **Build the project:**
+   ```bash
+   mvn clean install
+   ```
 
-# Build the application
-mvn clean install
+4. **Run the application:**
+   ```bash
+   mvn spring-boot:run -pl core-lending-mortgages-web
+   ```
 
-# Run tests
-mvn test
-```
-
-### Running the Application
-```bash
-# Run with Maven
-mvn spring-boot:run -pl core-lending-mortgages-web
-
-# Or run the JAR directly
-java -jar core-lending-mortgages-web/target/core-lending-mortgages-web-1.0.0-SNAPSHOT.jar
-```
-
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t firefly/core-lending-mortgages .
-
-# Run with Docker Compose
-docker-compose up -d
-```
+5. **Access the application:**
+   - Application: http://localhost:8080
+   - API Documentation: http://localhost:8080/swagger-ui.html
+   - Health Check: http://localhost:8080/actuator/health
 
 ## API Documentation
 
-Once the application is running, you can access:
+The microservice provides REST APIs documented with OpenAPI 3.0:
 
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **OpenAPI Spec**: http://localhost:8080/v3/api-docs
-- **Health Check**: http://localhost:8080/actuator/health
+- **Local Environment**: http://localhost:8080/swagger-ui.html
 
-## Contributing
+### API Endpoints
 
-We welcome contributions to the Firefly OpenCore Banking Platform! Please follow these guidelines:
+| Resource | Base Path | Description |
+|----------|-----------|-------------|
+| Mortgage Agreements | `/api/v1/mortgage-agreements` | Mortgage agreement management |
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+## Development Guidelines
 
-### Development Standards
-- Follow Java coding conventions
-- Write comprehensive unit tests
-- Document public APIs with JavaDoc
-- Use meaningful commit messages
-- Ensure all tests pass before submitting PR
+### Coding Standards
+
+- **Java 21 Features**: Utilize modern Java features
+- **Reactive Programming**: Use Project Reactor for non-blocking operations
+- **Validation**: All DTOs include comprehensive Jakarta validation annotations
+- **Documentation**: Document all public APIs with OpenAPI 3.0 annotations
+- **Testing**: Maintain high test coverage
+- **Code Quality**: Follow Google Java Style Guide
+
+### Database Guidelines
+
+- **Migrations**: All schema changes must be versioned using Flyway migrations
+- **UUIDs**: Use UUID primary keys for all entities
+- **Enums**: Database enums are mapped to Java enums with automatic casting
+- **Auditing**: All entities include audit timestamps
+
+## Testing
+
+```bash
+# Run all tests
+mvn clean test
+
+# Run tests for specific module
+mvn test -pl core-lending-mortgages-core
+
+# Run integration tests
+mvn verify
+
+# Run tests with coverage
+mvn clean test jacoco:report
+```
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
-## Support
+```
+Copyright 2025 Firefly Software Solutions Inc
 
-For support and questions:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+## Support and Contact
+
 - **Website**: [getfirefly.io](https://getfirefly.io)
-- **GitHub Issues**: [Create an issue](https://github.com/firefly-oss/core-lending-mortgage/issues)
-- **Email**: dev@getfirefly.io
+- **GitHub Organization**: [firefly-oss](https://github.com/firefly-oss)
+- **Documentation**: [docs.getfirefly.io](https://docs.getfirefly.io)
+- **Community**: [community.getfirefly.io](https://community.getfirefly.io)
 
 ---
 
-**Firefly Software Solutions Inc** - Building the future of open banking technology.
+**Firefly OpenCore Banking Platform** - Building the future of open banking infrastructure.
+
