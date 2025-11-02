@@ -2,7 +2,6 @@
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/ApiClient.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/RFC3339DateFormat.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgageNotificationDTO.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgagePropertyApi.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/auth/ApiKeyAuth.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/MortgageNotificationDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgageApplicationStatusHistoryDTO.java
@@ -15,13 +14,11 @@
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/auth/HttpBearerAuth.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgageContractDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgageDisbursementApi.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgageAppraisalApi.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgageDocumentApi.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/auth/HttpBasicAuth.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/MortgageApplicationDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgagePaymentRecordDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/StringUtil.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/MortgageAppraisalDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/auth/Authentication.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/JavaTimeFormatter.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/MortgageDisbursementDTO.java
@@ -36,8 +33,5 @@
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgagePaymentScheduleApi.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/invoker/ServerVariable.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgageDisbursementDTO.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/MortgagePropertyDTO.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgageContractApi.java
 /Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/api/MortgagePaymentRecordApi.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgagePropertyDTO.java
-/Users/ancongui/Development/firefly/core-lending-mortgage/core-lending-mortgages-sdk/target/generated-sources/src/gen/java/main/com/firefly/core/lending/mortgages/sdk/model/PaginationResponseMortgageAppraisalDTO.java
