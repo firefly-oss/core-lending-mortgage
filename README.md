@@ -1,7 +1,7 @@
 # Core Lending Mortgages Microservice
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
+[![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.java.net/projects/jdk/25/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)](https://spring.io/projects/spring-boot)
 
 ## Overview
@@ -29,26 +29,26 @@ The Firefly lending platform follows a clear separation of concerns across multi
 
 ### What This Microservice Does
 
-✅ **Mortgage Agreement Management**
+**Mortgage Agreement Management**
 - Mortgage-specific contractual terms
 - Legal and regulatory documentation (notary, deed, registry)
 - Mortgage product classification (conventional, Islamic, reverse, government-backed)
 - Lien position and priority
 - Contractual features and permissions (assumability, portability, prepayment terms)
 
-✅ **Interest Rate Contractual Terms**
+**Interest Rate Contractual Terms**
 - Initial interest rate (what was AGREED at contract signing)
 - Rate type (fixed, variable, hybrid)
 - Reference rate and margin (for variable/hybrid mortgages)
 - Rate caps, floors, and periodic caps (contractual limits)
 
-✅ **Islamic Finance Support**
+**Islamic Finance Support**
 - Murabaha (cost-plus financing)
 - Ijara (lease-to-own)
 - Musharaka (partnership/joint ownership)
 - Diminishing Musharaka
 
-✅ **Global Mortgage Products**
+**Global Mortgage Products**
 - 40+ mortgage types from around the world
 - Government-backed programs (FHA, VA, CMHC, Help to Buy, KfW, INFONAVIT)
 - Specialized products (bridge loans, construction, reverse mortgages)
@@ -56,7 +56,7 @@ The Firefly lending platform follows a clear separation of concerns across multi
 
 ### What This Microservice Does NOT Do
 
-❌ **Operational Servicing** (handled by core-lending-loan-servicing)
+**Operational Servicing** (handled by core-lending-loan-servicing)
 - Payment schedules and installments
 - Actual payment processing
 - Disbursements
@@ -67,20 +67,20 @@ The Firefly lending platform follows a clear separation of concerns across multi
 - Escrow management
 - Rebates and commissions
 
-❌ **Loan Origination** (handled by core-lending-loan-origination)
+**Loan Origination** (handled by core-lending-loan-origination)
 - Loan applications
 - Credit analysis
 - Underwriting
 - Proposed offers
 
-❌ **Collateral Management** (handled by core-lending-collateral-management)
+**Collateral Management** (handled by core-lending-collateral-management)
 - Property valuation
 - Insurance management
 - Collateral tracking
 
 ## Technology Stack
 
-- **Java 21**: Latest LTS version with virtual threads support
+- **Java 25**: Latest LTS version with virtual threads support
 - **Spring Boot 3.x**: Modern Spring framework with native compilation support
 - **Spring WebFlux**: Reactive web framework for non-blocking I/O
 - **R2DBC**: Reactive database connectivity for PostgreSQL
@@ -166,45 +166,58 @@ Agreement lifecycle status:
 
 ### MortgageTypeEnum
 
-Global mortgage product types (40+ types):
+Mortgage product types (39 values):
 
-**Conventional Mortgages:**
-- CONVENTIONAL_FIXED, CONVENTIONAL_VARIABLE, CONVENTIONAL_HYBRID
-- CONVENTIONAL_INTEREST_ONLY, CONVENTIONAL_BALLOON
+**Standard:**
+- `CONVENTIONAL` - Standard mortgage
+- `GOVERNMENT_BACKED` - FHA, VA, USDA (US), Help to Buy (UK), etc.
+- `JUMBO` - Above conforming loan limits
 
-**Government-Backed:**
-- FHA, VA, USDA (USA)
-- CMHC (Canada)
-- HELP_TO_BUY (UK)
-- KFW (Germany)
-- INFONAVIT, FOVISSSTE (Mexico)
+**Reverse/Equity:**
+- `REVERSE` - Reverse mortgage (equity release)
+- `EQUITY_RELEASE` - Lifetime mortgage (UK/Europe)
+- `HOME_REVERSION` - Home reversion plan
 
 **Islamic Finance:**
-- MURABAHA (cost-plus financing)
-- IJARA (lease-to-own)
-- MUSHARAKA (partnership)
-- DIMINISHING_MUSHARAKA
-- ISTISNA (construction financing)
-
-**Reverse Mortgages:**
-- REVERSE_MORTGAGE
-- HECM (USA)
-- LIFETIME_MORTGAGE (UK)
+- `ISLAMIC_MURABAHA` - Cost-plus financing
+- `ISLAMIC_IJARA` - Lease-to-own
+- `ISLAMIC_MUSHARAKA` - Partnership/equity participation
+- `ISLAMIC_DIMINISHING_MUSHARAKA` - Diminishing partnership
 
 **Specialized:**
-- BRIDGE_LOAN, CONSTRUCTION_MORTGAGE, LAND_LOAN
-- RENOVATION_MORTGAGE, EQUITY_RELEASE
-- SHARED_EQUITY, SHARED_OWNERSHIP
-- RENT_TO_OWN, LEASE_PURCHASE
+- `BRIDGE` - Short-term bridge loan
+- `CONSTRUCTION` - Construction-to-permanent
+- `RENOVATION` - Purchase + renovation financing
+- `SHARED_EQUITY` - Shared ownership schemes
+- `SHARED_APPRECIATION` - Lender shares in property appreciation
+- `BALLOON` - Large final payment
+- `INTEREST_ONLY` - Interest-only mortgage
+- `OFFSET` - Offset mortgage (savings offset interest)
+- `FLEXIBLE` - Flexible payment mortgage
+- `TRACKER` - Tracks base rate
+- `DISCOUNT` - Discount off standard variable rate
+- `CAPPED` - Interest rate cap
+- `PORTABLE` - Portable mortgage
+- `ASSUMABLE` - Assumable by buyer
+- `NON_RECOURSE` - Lender can't pursue borrower beyond collateral
+- `RECOURSE` - Full recourse to borrower
 
 **Commercial/Investment:**
-- COMMERCIAL_MORTGAGE, INVESTMENT_PROPERTY
-- MULTIFAMILY, MIXED_USE
+- `COMMERCIAL` - Commercial property mortgage
+- `BUY_TO_LET` - Investment/rental property
+- `SECOND_HOME` - Vacation/second home
 
-**International Specific:**
-- HYPOTHEEK (Dutch), BAUSPAREN (German)
-- PRET_IMMOBILIER (French), HIPOTECA (Spanish/Latin American)
-- MUTUO_IPOTECARIO (Italian)
+**Other:**
+- `SELF_BUILD` - Self-build mortgage
+- `GUARANTOR` - Guarantor mortgage
+- `JOINT_BORROWER_SOLE_PROPRIETOR` - JBSP mortgage
+- `EQUITY_LOAN` - Government equity loan
+- `RIGHT_TO_BUY` - Right to buy scheme
+- `HELP_TO_BUY` - Help to buy scheme
+- `LIFETIME` - Lifetime mortgage
+- `AGRICULTURAL` - Agricultural/farm mortgage
+- `LAND` - Land-only mortgage
+- `OTHER` - Other types
 
 ### LienPositionEnum
 
@@ -290,7 +303,7 @@ The microservice provides REST APIs documented with OpenAPI 3.0:
 
 ### Coding Standards
 
-- **Java 21 Features**: Utilize modern Java features
+- **Java 25 Features**: Utilize modern Java features
 - **Reactive Programming**: Use Project Reactor for non-blocking operations
 - **Validation**: All DTOs include comprehensive Jakarta validation annotations
 - **Documentation**: Document all public APIs with OpenAPI 3.0 annotations
