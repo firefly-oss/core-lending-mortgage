@@ -22,7 +22,7 @@ import com.firefly.core.lending.mortgages.interfaces.enums.AgreementStatusEnum;
 import com.firefly.core.lending.mortgages.interfaces.enums.LienPositionEnum;
 import com.firefly.core.lending.mortgages.interfaces.enums.MortgageTypeEnum;
 import com.firefly.core.lending.mortgages.interfaces.enums.RateTypeEnum;
-import com.firefly.core.utils.annotations.FilterableId;
+import org.fireflyframework.utils.annotations.FilterableId;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
