@@ -1,0 +1,473 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:18080
+  description: Generated server url
+tags:
+- name: MortgageAgreement
+  description: Operations on mortgage agreements
+paths:
+  /api/v1/mortgage-agreements/{mortgageAgreementId}:
+    get:
+      tags:
+      - MortgageAgreement
+      summary: Get a mortgage agreement by ID
+      operationId: getById
+      parameters:
+      - name: mortgageAgreementId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MortgageAgreementDTO"
+    put:
+      tags:
+      - MortgageAgreement
+      summary: Update a mortgage agreement
+      operationId: update
+      parameters:
+      - name: mortgageAgreementId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MortgageAgreementDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MortgageAgreementDTO"
+    delete:
+      tags:
+      - MortgageAgreement
+      summary: Delete a mortgage agreement
+      operationId: delete
+      parameters:
+      - name: mortgageAgreementId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /api/v1/mortgage-agreements:
+    get:
+      tags:
+      - MortgageAgreement
+      summary: List or search mortgage agreements
+      operationId: findAll
+      parameters:
+      - name: filterRequest
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/FilterRequestMortgageAgreementDTO"
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaginationResponseMortgageAgreementDTO"
+    post:
+      tags:
+      - MortgageAgreement
+      summary: Create a new mortgage agreement
+      operationId: create
+      parameters:
+      - name: X-Idempotency-Key
+        in: header
+        description: "Unique key for idempotent requests. If provided, ensures that\
+          \ identical requests with the same key will only be processed once."
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MortgageAgreementDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MortgageAgreementDTO"
+components:
+  schemas:
+    MortgageAgreementDTO:
+      required:
+      - agreementStatus
+      - applicationId
+      - mortgageType
+      - rateType
+      type: object
+      properties:
+        mortgageAgreementId:
+          type: string
+          format: uuid
+          readOnly: true
+        applicationId:
+          type: string
+          format: uuid
+        servicingCaseId:
+          type: string
+          format: uuid
+        proposedOfferId:
+          type: string
+          format: uuid
+        agreementStatus:
+          type: string
+          enum:
+          - DRAFT
+          - ACTIVE
+          - SUSPENDED
+          - CLOSED
+          - CANCELLED
+        mortgageType:
+          type: string
+          enum:
+          - CONVENTIONAL
+          - GOVERNMENT_BACKED
+          - JUMBO
+          - REVERSE
+          - ISLAMIC_MURABAHA
+          - ISLAMIC_IJARA
+          - ISLAMIC_MUSHARAKA
+          - ISLAMIC_DIMINISHING_MUSHARAKA
+          - BRIDGE
+          - CONSTRUCTION
+          - RENOVATION
+          - EQUITY_RELEASE
+          - SHARED_EQUITY
+          - SHARED_APPRECIATION
+          - BALLOON
+          - INTEREST_ONLY
+          - OFFSET
+          - FLEXIBLE
+          - TRACKER
+          - DISCOUNT
+          - CAPPED
+          - PORTABLE
+          - ASSUMABLE
+          - NON_RECOURSE
+          - RECOURSE
+          - COMMERCIAL
+          - BUY_TO_LET
+          - SECOND_HOME
+          - SELF_BUILD
+          - GUARANTOR
+          - JOINT_BORROWER_SOLE_PROPRIETOR
+          - EQUITY_LOAN
+          - RIGHT_TO_BUY
+          - HELP_TO_BUY
+          - LIFETIME
+          - HOME_REVERSION
+          - AGRICULTURAL
+          - LAND
+          - OTHER
+        lienPosition:
+          type: string
+          enum:
+          - FIRST
+          - SECOND
+          - THIRD
+          - SUBORDINATE
+        rateType:
+          type: string
+          enum:
+          - FIXED
+          - VARIABLE
+          - HYBRID
+        initialInterestRate:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        referenceRate:
+          maxLength: 50
+          minLength: 0
+          type: string
+        marginRate:
+          maximum: 50.00
+          exclusiveMaximum: false
+          minimum: -10.00
+          exclusiveMinimum: false
+          type: number
+        fixedRatePeriodMonths:
+          maximum: 480
+          minimum: 0
+          type: integer
+          format: int32
+        rateCap:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        rateFloor:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        periodicRateCap:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        profitRate:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        rentalRate:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        bankOwnershipPercentage:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        purchasePrice:
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        markupAmount:
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        notaryName:
+          maxLength: 200
+          minLength: 0
+          type: string
+        notaryRegistrationNumber:
+          maxLength: 100
+          minLength: 0
+          type: string
+        deedNumber:
+          maxLength: 100
+          minLength: 0
+          type: string
+        deedDate:
+          type: string
+          format: date
+        registryOffice:
+          maxLength: 200
+          minLength: 0
+          type: string
+        registryVolume:
+          maxLength: 50
+          minLength: 0
+          type: string
+        registryBook:
+          maxLength: 50
+          minLength: 0
+          type: string
+        registryFolio:
+          maxLength: 50
+          minLength: 0
+          type: string
+        registryInscriptionDate:
+          type: string
+          format: date
+        isAssumable:
+          type: boolean
+        isPortable:
+          type: boolean
+        isRecourse:
+          type: boolean
+        allowsEarlyRepayment:
+          type: boolean
+        earlyRepaymentPenaltyRate:
+          maximum: 100.00
+          exclusiveMaximum: false
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        earlyRepaymentPenaltyPeriodMonths:
+          maximum: 480
+          minimum: 0
+          type: integer
+          format: int32
+        allowsPartialPrepayment:
+          type: boolean
+        partialPrepaymentMinAmount:
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        partialPrepaymentMaxPerYear:
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        subrogationAllowed:
+          type: boolean
+        subrogationFee:
+          minimum: 0.00
+          exclusiveMinimum: false
+          type: number
+        agreementSignedDate:
+          type: string
+          format: date
+        agreementEffectiveDate:
+          type: string
+          format: date
+        createdBy:
+          type: string
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedBy:
+          type: string
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+    FilterOptions:
+      type: object
+      properties:
+        caseInsensitiveStrings:
+          type: boolean
+        includeInheritedFields:
+          type: boolean
+      description: Filter options for customizing filter behavior
+    FilterRequestMortgageAgreementDTO:
+      required:
+      - pagination
+      type: object
+      properties:
+        filters:
+          $ref: "#/components/schemas/MortgageAgreementDTO"
+        rangeFilters:
+          $ref: "#/components/schemas/RangeFilter"
+        pagination:
+          $ref: "#/components/schemas/PaginationRequest"
+        options:
+          $ref: "#/components/schemas/FilterOptions"
+      description: Generic filter request that includes both filter criteria and pagination
+    PaginationRequest:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          description: The zero-based page number to retrieve.
+          format: int32
+          example: 0
+          default: 0
+        pageSize:
+          type: integer
+          description: The number of items per page.
+          format: int32
+          example: 10
+          default: 10
+        sortBy:
+          type: string
+          description: The field to sort the results by.
+          example: name
+        sortDirection:
+          type: string
+          description: "The direction of sorting, either ASC or DESC."
+          example: DESC
+          default: DESC
+      description: "Represents a pagination request for retrieving paginated results,\
+        \ including page number, size, sort field, and direction."
+    RangeFilter:
+      type: object
+      properties:
+        ranges:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/RangeObject"
+          description: Map of field names to their range criteria
+      description: Represents range filters for numeric fields
+    RangeObject:
+      type: object
+      properties:
+        from:
+          type: object
+          description: Start value of the range
+        to:
+          type: object
+          description: End value of the range
+      description: Represents a range with from and to values
+    PaginationResponseMortgageAgreementDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: The list of items for the current page.
+          items:
+            $ref: "#/components/schemas/MortgageAgreementDTO"
+        totalElements:
+          type: integer
+          description: The total number of elements across all pages.
+          format: int64
+        totalPages:
+          type: integer
+          description: The total number of pages based on the data size and page size.
+          format: int32
+        currentPage:
+          type: integer
+          description: "The current page number, typically zero-based."
+          format: int32
+      description: Represents a paginated response containing a list of items and
+        pagination metadata.
