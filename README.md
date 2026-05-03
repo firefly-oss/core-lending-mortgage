@@ -6,7 +6,7 @@
 
 ## Overview
 
-The **Core Lending Mortgages Microservice** is a specialized component of the **Firefly OpenCore Banking Platform**, developed by **Firefly Software Solutions Inc** under the Apache 2.0 license. This microservice is responsible for managing **mortgage-specific contractual terms and legal documentation**.
+The **Core Lending Mortgages Microservice** is a specialized component of the **Firefly OpenCore Banking Platform**, developed by **Firefly Software Foundation** under the Apache 2.0 license. This microservice is responsible for managing **mortgage-specific contractual terms and legal documentation**.
 
 This service provides a focused, cohesive domain model for mortgage agreements, handling only the contractual and legal aspects that are unique to mortgage products. All operational servicing (payments, disbursements, accruals, notifications, rate changes) is delegated to the **core-lending-loan-servicing** microservice.
 
@@ -338,7 +338,7 @@ mvn clean test jacoco:report
 This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
 ```
-Copyright 2025 Firefly Software Solutions Inc
+Copyright 2025 Firefly Software Foundation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
