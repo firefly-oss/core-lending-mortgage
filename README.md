@@ -11,7 +11,7 @@ The **Core Lending Mortgages Microservice** is a specialized component of the **
 This service provides a focused, cohesive domain model for mortgage agreements, handling only the contractual and legal aspects that are unique to mortgage products. All operational servicing (payments, disbursements, accruals, notifications, rate changes) is delegated to the **core-lending-loan-servicing** microservice.
 
 **Organization**: [firefly-oss](https://github.com/firefly-oss)  
-**Website**: [getfirefly.io](https://getfirefly.io)  
+**Website**: [fireflysoftware.io](https://fireflysoftware.io)  
 **License**: Apache 2.0
 
 ## Architecture
@@ -355,10 +355,10 @@ limitations under the License.
 
 ## Support and Contact
 
-- **Website**: [getfirefly.io](https://getfirefly.io)
+- **Website**: [fireflysoftware.io](https://fireflysoftware.io)
 - **GitHub Organization**: [firefly-oss](https://github.com/firefly-oss)
-- **Documentation**: [docs.getfirefly.io](https://docs.getfirefly.io)
-- **Community**: [community.getfirefly.io](https://community.getfirefly.io)
+- **Documentation**: [docs.fireflysoftware.io](https://docs.fireflysoftware.io)
+- **Community**: [community.fireflysoftware.io](https://community.fireflysoftware.io)
 
 ---
 
