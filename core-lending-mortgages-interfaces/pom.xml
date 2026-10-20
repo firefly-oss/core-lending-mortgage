@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-lending-mortgages-interfaces</artifactId>
+    <name>core-lending-mortgages-interfaces</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

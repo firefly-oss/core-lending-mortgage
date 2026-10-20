@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>core-lending-mortgages</artifactId>
+    <name>core-lending-mortgages</name>
     <version>26.10.3</version>
     <packaging>pom</packaging>
     <modules>
